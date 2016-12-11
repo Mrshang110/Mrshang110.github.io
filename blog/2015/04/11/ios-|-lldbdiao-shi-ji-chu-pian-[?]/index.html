@@ -23,13 +23,23 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
-
+<script>
+	function addBlankTargetForLinks () {
+	  $('a[href^="http"]').each(function(){
+		  $(this).attr('target', '_blank');
+	  });
+	}
+	$(document).bind('DOMNodeInserted', function(event) {
+	  addBlankTargetForLinks();
+	});
+</script>
   <!-- -->
   
 
@@ -87,6 +97,8 @@
         
         
         
+          | <a href="#comments">Comments</a>
+        
       </p>
     
   </header>
@@ -98,7 +110,10 @@
 
 <h3>使用</h3>
 
-<p> LLDB功能比较强大,介绍太多会打击很多初学者的自信心.这里,只会介绍一些比较常用的使用方法和命令.
+<p> LLDB功能比较强大,介绍太多会打击很多初学者的自信心.这里,只会介绍一些比较常用的使用方法和命令.</p>
+
+<p> <!--more-->
+ 
 下面的操作,都是基于debug状态的.在调试时,根据断点才能确定你要操作的上下文(上下文你可以暂时理解为范围,比如你在Word中更改文字颜色,这个操作也是有上下文的,只会对该上下文内的文字有效.这种理解并不十分准确,接触多了自己就能体会到具体含义了).</p>
 
 <h4>po/p命令</h4>
@@ -186,19 +201,53 @@ foo
     <p class="meta">
       
       
-      
+    
+    <section>
+      <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/04/11/ios-|-lldbdiao-shi-ji-chu-pian-[?]" data-title="iOS | LLDB调试基础篇(一)" data-url="http://mrshang110.github.io/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end --></div>
+    </section>
+    
 
     </p>
   </footer>
-</article>
+  </article>
 
   <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    
-  </section>
+   <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/04/11/ios-|-lldbdiao-shi-ji-chu-pian-[?]" data-title="iOS | LLDB调试基础篇(一)" data-url="http://mrshang110.github.io/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+  </section>
+ 
 </div>
 
 <aside class="sidebar">
@@ -235,6 +284,14 @@ foo
 
 
 <section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/ios开发/'>ios开发 (10)</a></li>
+
+  </ul>
+</section>
+
+<section>
 <h1>友情链接</h1>
 <ul>
         <li>
@@ -245,7 +302,6 @@ foo
 
   
 </aside>
-
 
     </div>
   </div>
@@ -277,8 +333,8 @@ foo
 
 
 
-
-
+<!-- 
+ -->
 
 
 

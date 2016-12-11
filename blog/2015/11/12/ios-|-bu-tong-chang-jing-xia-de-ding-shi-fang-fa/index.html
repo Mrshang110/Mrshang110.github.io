@@ -24,13 +24,23 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
-
+<script>
+	function addBlankTargetForLinks () {
+	  $('a[href^="http"]').each(function(){
+		  $(this).attr('target', '_blank');
+	  });
+	}
+	$(document).bind('DOMNodeInserted', function(event) {
+	  addBlankTargetForLinks();
+	});
+</script>
   <!-- -->
   
 
@@ -88,6 +98,8 @@
         
         
         
+          | <a href="#comments">Comments</a>
+        
       </p>
     
   </header>
@@ -99,6 +111,9 @@
 要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述,后续随笔会介绍).Runloop简单地说就是一个接收处理异步消息事件的循环,该循环中等待事件发生，然后将这个事件送到能处理它的地方。</p>
 
 <p>或许你还不是很明白,没有关系,有个初步概念就不影响你理解NSTimer了.</p>
+
+<!--more-->
+
 
 <p>NSTimer注册到Runloop中后,Runloop会周期性地触发注册的事件.但是这里的周期并不十分精确.Timer的属性Tolerance(容差)告诉系统可以允许的时间误差.一旦有大型的任务,错过这个周期需要执行的时间点±Tolerance,任务不会延后执行而是跳跃过去,下个周期继续.</p>
 
@@ -299,19 +314,53 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
         <a class="basic-alignment left" href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/" title="Previous Post: iOS | 命名规范">&laquo; iOS | 命名规范</a>
       
       
-      
+    
+    <section>
+      <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/11/12/ios-|-bu-tong-chang-jing-xia-de-ding-shi-fang-fa" data-title="iOS | 不同场景下的定时方法" data-url="http://mrshang110.github.io/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end --></div>
+    </section>
+    
 
     </p>
   </footer>
-</article>
+  </article>
 
   <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    
-  </section>
+   <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/11/12/ios-|-bu-tong-chang-jing-xia-de-ding-shi-fang-fa" data-title="iOS | 不同场景下的定时方法" data-url="http://mrshang110.github.io/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+  </section>
+ 
 </div>
 
 <aside class="sidebar">
@@ -348,6 +397,14 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 
 
 <section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/ios开发/'>ios开发 (10)</a></li>
+
+  </ul>
+</section>
+
+<section>
 <h1>友情链接</h1>
 <ul>
         <li>
@@ -358,7 +415,6 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 
   
 </aside>
-
 
     </div>
   </div>
@@ -390,8 +446,8 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 
 
 
-
-
+<!-- 
+ -->
 
 
 

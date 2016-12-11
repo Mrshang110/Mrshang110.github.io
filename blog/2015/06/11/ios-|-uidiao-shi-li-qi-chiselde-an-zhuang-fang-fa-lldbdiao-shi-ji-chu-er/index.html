@@ -23,13 +23,23 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
-
+<script>
+	function addBlankTargetForLinks () {
+	  $('a[href^="http"]').each(function(){
+		  $(this).attr('target', '_blank');
+	  });
+	}
+	$(document).bind('DOMNodeInserted', function(event) {
+	  addBlankTargetForLinks();
+	});
+</script>
   <!-- -->
   
 
@@ -87,6 +97,8 @@
         
         
         
+          | <a href="#comments">Comments</a>
+        
       </p>
     
   </header>
@@ -97,6 +109,9 @@
 <h3>Chisel简介</h3>
 
 <p>Chisel是Facebook开源的一个插件,主要作用是辅助调试iOS App,它对LLDB命令进行了封装.换言之,Chisel就是LLDB命令集合.如果需要,你可以自定制命令.</p>
+
+<!--more-->
+
 
 <h4>安装介绍</h4>
 
@@ -280,19 +295,53 @@
         <a class="basic-alignment left" href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/" title="Previous Post: iOS | 小心NSTimer中的循环引用">&laquo; iOS | 小心NSTimer中的循环引用</a>
       
       
-      
+    
+    <section>
+      <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/06/11/ios-|-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er" data-title="iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)" data-url="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end --></div>
+    </section>
+    
 
     </p>
   </footer>
-</article>
+  </article>
 
   <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    
-  </section>
+   <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/06/11/ios-|-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er" data-title="iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)" data-url="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+  </section>
+ 
 </div>
 
 <aside class="sidebar">
@@ -329,6 +378,14 @@
 
 
 <section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/ios开发/'>ios开发 (10)</a></li>
+
+  </ul>
+</section>
+
+<section>
 <h1>友情链接</h1>
 <ul>
         <li>
@@ -339,7 +396,6 @@
 
   
 </aside>
-
 
     </div>
   </div>
@@ -371,8 +427,8 @@
 
 
 
-
-
+<!-- 
+ -->
 
 
 

@@ -23,13 +23,23 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
-
+<script>
+	function addBlankTargetForLinks () {
+	  $('a[href^="http"]').each(function(){
+		  $(this).attr('target', '_blank');
+	  });
+	}
+	$(document).bind('DOMNodeInserted', function(event) {
+	  addBlankTargetForLinks();
+	});
+</script>
   <!-- -->
   
 
@@ -87,12 +97,17 @@
         
         
         
+          | <a href="#comments">Comments</a>
+        
       </p>
     
   </header>
 
 
 <div class="entry-content"><p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
+
+<!--more-->
+
 
 <p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
 
@@ -209,19 +224,53 @@ Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
         <a class="basic-alignment left" href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/" title="Previous Post: iOS | 不同场景下的定时方法">&laquo; iOS | 不同场景下的定时方法</a>
       
       
-      
+    
+    <section>
+      <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2016/10/11/ios-|-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian" data-title="iOS | 开发中你可能没有留意的那些事" data-url="http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end --></div>
+    </section>
+    
 
     </p>
   </footer>
-</article>
+  </article>
 
   <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    
-  </section>
+   <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2016/10/11/ios-|-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian" data-title="iOS | 开发中你可能没有留意的那些事" data-url="http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+  </section>
+ 
 </div>
 
 <aside class="sidebar">
@@ -258,6 +307,14 @@ Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 
 
 <section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/ios开发/'>ios开发 (10)</a></li>
+
+  </ul>
+</section>
+
+<section>
 <h1>友情链接</h1>
 <ul>
         <li>
@@ -268,7 +325,6 @@ Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 
   
 </aside>
-
 
     </div>
   </div>
@@ -300,8 +356,8 @@ Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 
 
 
-
-
+<!-- 
+ -->
 
 
 

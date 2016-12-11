@@ -31,13 +31,23 @@
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//libs.baidu.com/jquery/1.7.2/jquery.min.js"></script>
+  <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
-
+<script>
+	function addBlankTargetForLinks () {
+	  $('a[href^="http"]').each(function(){
+		  $(this).attr('target', '_blank');
+	  });
+	}
+	$(document).bind('DOMNodeInserted', function(event) {
+	  addBlankTargetForLinks();
+	});
+</script>
   <!-- -->
   
 
@@ -95,6 +105,8 @@
         
         
         
+          | <a href="#comments">Comments</a>
+        
       </p>
     
   </header>
@@ -103,6 +115,9 @@
 <div class="entry-content"><blockquote><p>上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解.</p></blockquote>
 
 <p>演示是的代码状态如下图:</p>
+
+<!--more-->
+
 
 <p><img src="http://upload-images.jianshu.io/upload_images/1523795-9774a25cc28abbec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="演示代码" />
 <strong><em>pclass命令</em></strong>
@@ -358,19 +373,53 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
         <a class="basic-alignment left" href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/" title="Previous Post: iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)">&laquo; iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
       
       
-      
+    
+    <section>
+      <h1>Comments</h1>
+    <div id="comments" aria-live="polite"><!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/06/15/ios-|-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san" data-title="iOS | UI调试利器Chisel使用实战(LLDB调试基础三)" data-url="http://mrshang110.github.io/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
+
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end --></div>
+    </section>
+    
 
     </p>
   </footer>
-</article>
+  </article>
 
   <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-    
-  </section>
+   <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2015/06/15/ios-|-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san" data-title="iOS | UI调试利器Chisel使用实战(LLDB调试基础三)" data-url="http://mrshang110.github.io/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+  </section>
+ 
 </div>
 
 <aside class="sidebar">
@@ -407,6 +456,14 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 
 
 <section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    <li class='category'><a href='/blog/categories/ios开发/'>ios开发 (10)</a></li>
+
+  </ul>
+</section>
+
+<section>
 <h1>友情链接</h1>
 <ul>
         <li>
@@ -417,7 +474,6 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 
   
 </aside>
-
 
     </div>
   </div>
@@ -449,8 +505,8 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 
 
 
-
-
+<!-- 
+ -->
 
 
 

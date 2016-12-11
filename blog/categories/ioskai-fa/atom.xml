@@ -4,11 +4,11 @@
   <title><![CDATA[Category: Ios开发 | Mrshang110]]></title>
   <link href="http://mrshang110.github.io/blog/categories/ioskai-fa/atom.xml" rel="self"/>
   <link href="http://mrshang110.github.io/"/>
-  <updated>2016-12-11T20:05:55+08:00</updated>
+  <updated>2016-12-11T22:37:53+08:00</updated>
   <id>http://mrshang110.github.io/</id>
   <author>
     <name><![CDATA[尚高林]]></name>
-    <email><![CDATA[mailto:18317713187@163.com]]></email>
+    
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p>每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境.</p>
 
 <p>  <img src="http://upload-images.jianshu.io/upload_images/1523795-cca8c9ed5d930d18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="傻傻分不清楚" /></p>
+
+<!--more-->
+
 
 <ul>
 <li>bool 这个类型,是c语言&lt;stdbool.h>的类型,这个类型接收值后,非0即1.即便给a=1000000000000000000000000000000000000000000000000000000000000000000000.0也不会有任何警告,bool只会判断这个这个值是否为0.这里需要注意浮点数误差.</li>
@@ -86,9 +89,16 @@ typedef signed char BOOL;
 
 <h3>Memory Graph Debugger 使用方法</h3>
 
-<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.
--  点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></p>
+<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.</p>
+
+<!--more-->
+
+
+<ul>
+<li>点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></li>
+</ul>
+
 
 <p><img src="http://upload-images.jianshu.io/upload_images/1523795-57d6616bc0f3969b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="调试工具栏" /></p>
 
@@ -141,6 +151,9 @@ typedef signed char BOOL;
     <updated>2016-10-11T17:33:45+08:00</updated>
     <id>http://mrshang110.github.io/blog/2016/10/11/ios-|-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian</id>
     <content type="html"><![CDATA[<p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
+
+<!--more-->
+
 
 <p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
 
@@ -215,6 +228,9 @@ Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述,后续随笔会介绍).Runloop简单地说就是一个接收处理异步消息事件的循环,该循环中等待事件发生，然后将这个事件送到能处理它的地方。</p>
 
 <p>或许你还不是很明白,没有关系,有个初步概念就不影响你理解NSTimer了.</p>
+
+<!--more-->
+
 
 <p>NSTimer注册到Runloop中后,Runloop会周期性地触发注册的事件.但是这里的周期并不十分精确.Timer的属性Tolerance(容差)告诉系统可以允许的时间误差.一旦有大型的任务,错过这个周期需要执行的时间点±Tolerance,任务不会延后执行而是跳跃过去,下个周期继续.</p>
 
@@ -339,6 +355,9 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 
 <p>1.私有方法
 在OC语言中,声明一个方法为私有的,需要把方法写在实现文件里.如何凸显该方法私有的呢?根据笔者的经验,建议大家给方法命名以<code>p_</code>,也可以项目前缀开头.如</p>
+
+<!--more-->
+
 
 <pre><code>//  以p_开头,较为常用,便于开源
 - (void)p_dealWithDataSource:(NSData *)sourceData {
