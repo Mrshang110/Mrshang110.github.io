@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | XCode8新增可视化循环引用调试工具 - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="英文地址:Memory Graph Debugger Tips 1
+2
+3
+4
+5
+译者的话:
+目前关于Debug Memory Graph的中文资料很少,
+甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
+来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片). &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | XCode8新增可视化循环引用调试工具</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-10-28T17:47:19+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:47 pm</span></time>
+        
+        
+ | <a href="#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>英文地址:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips">Memory Graph Debugger Tips</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>译者的话:
+</span><span class='line'>目前关于Debug Memory Graph的中文资料很少,
+</span><span class='line'>甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
+</span><span class='line'>来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片).
+</span><span class='line'>交流中很少翻译成中文或者没有统一中文翻译的词,依然使用英文原词.</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Memory Graph Debugger 使用方法</h3>
+
+<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.
+-  点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-57d6616bc0f3969b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="调试工具栏" /></p>
+
+<ul>
+<li><p>关闭僵(zombies)尸对象.开启scheme检查僵尸对象功能会干扰此功能(提示:一般情况下关闭僵尸对象功能,除非你必须使用).</p></li>
+<li><p>开启Malloc Stack Logging(我觉得开启它以展示栈回溯(backtraces)是个正确选择).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-59a3a2b9aa09ef7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zombies and Malloc Stack Logging" /></p></li>
+<li><p>在Xcode中显示右边栏,点击内存对象图中的对象查看它的类,层次和栈回溯.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-20236dc8943da8b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="右边栏" /></p></li>
+<li><p>对象之间会有一根带有标签的线,这根线代表对象的引用关系.点击线,在右边栏可以看到引用类型(weak, strong or unknown)和引用关系(source and destination).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-137cd3b9e3ba6be9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20161017_1.png" /></p></li>
+<li><p>单击对象右上角中心带有双向箭头的圆环,展开对象树.点击相同地方复原.点击左边栏对象可以聚焦对应对象上.</p></li>
+<li><p>在左边栏寻找紫色的感叹号,这些地方可能有问题.然而,大部分问题检测不到,需要你仔细检查(译者注:不要因为这就对Memory Graph Debugger失望,借助它,你可以自己发现这些问题).</p></li>
+</ul>
+
+
+<p> 我已经使用它解决了两个bug,都节约了很多时间.很有必要提醒你你可能碰到的问题.</p>
+
+<h3>Notification block</h3>
+
+<p>我个人不会用block设置一个NSNotification观察者,在 init 和 viewDidLoad里添加没有关联的代码,会使代码变得杂乱并且很危险.</p>
+
+<p>除非你很细心,否则它很危险.它可能捕获一个引用自己的强引用,造成对象释放不掉.我不喜欢像这需要做一些额外处理的APIs.</p>
+
+<p>很确定,这只是其中一例.</p>
+
+<p>在memory graph debugger工具中,capture标签告诉我们哪里捕获了block,通过它,你可以很快找到它.</p>
+
+<p>(参阅:来自2015年的:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips"> How Not to Crash #3: NSNotification.</a>)</p>
+
+<h3>View controller / view retain cycle</h3>
+
+<p>编程的一般原则是对象应该知道其他们的children,但不应该知道它们的parents(<em>译者注:此处的对象指View controller or view retain cycle</em>).</p>
+
+<p>然而,有些时候视图需要知道其所在的控制器.这不是常常需要,但一些时候是不得已的办法.</p>
+
+<p>编程规则也指出child需要知道parent,依然不能强引用parent.</p>
+
+<p>确实一个保留引用问题的就发生了:一个视图保留了它所在的视图控制器.这个例子解决办法就是改用弱引用.</p>
+
+<p>再一次,memory graph debugger工具使我准确地发现了这个bug.现在,我可以看到app里发生了什么,这是以前不可能的事.</p>
+
+<blockquote><p>如果您有什么问题,欢迎一起探讨.转载请注明出处.</p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-10-28T17:47:19+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:47 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/" title="Previous Post: iOS | 开发中你可能没有留意的那些事">&laquo; iOS | 开发中你可能没有留意的那些事</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/11/21/ios-%7C-bool/" title="Next Post: iOS | bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚">iOS | bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite">
+<div class="ds-thread" data-title="iOS | XCode8新增可视化循环引用调试工具"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"mrshang110"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mrshang110';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/';
+        var disqus_url = 'http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

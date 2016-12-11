@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://mrshang110.github.io/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/</loc>
-<lastmod>2016-12-11T17:13:00+08:00</lastmod>
+<loc>http://mrshang110.github.io/blog/2016/11/21/ios-%7C-bool/</loc>
+<lastmod>2016-11-21T20:39:12+08:00</lastmod>
+</url>
+<url>
+<loc>http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/</loc>
+<lastmod>2016-10-28T17:47:19+08:00</lastmod>
+</url>
+<url>
+<loc>http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/</loc>
+<lastmod>2016-10-11T17:33:45+08:00</lastmod>
 </url>
 <url>
 <loc>http://mrshang110.github.io/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/</loc>
@@ -15,6 +23,10 @@
 <url>
 <loc>http://mrshang110.github.io/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/</loc>
 <lastmod>2015-10-01T21:44:23+08:00</lastmod>
+</url>
+<url>
+<loc>http://mrshang110.github.io/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/</loc>
+<lastmod>2015-06-15T23:13:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/</loc>

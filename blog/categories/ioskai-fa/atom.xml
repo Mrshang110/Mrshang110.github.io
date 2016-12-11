@@ -4,158 +4,203 @@
   <title><![CDATA[Category: Ios开发 | Mrshang110]]></title>
   <link href="http://mrshang110.github.io/blog/categories/ioskai-fa/atom.xml" rel="self"/>
   <link href="http://mrshang110.github.io/"/>
-  <updated>2016-12-11T17:15:46+08:00</updated>
+  <updated>2016-12-11T19:07:33+08:00</updated>
   <id>http://mrshang110.github.io/</id>
   <author>
     <name><![CDATA[尚高林]]></name>
-    <email><![CDATA[shanggl@missfresh.cn]]></email>
+    <email><![CDATA[mailto:18317713187@163.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
   
   <entry>
-    <title type="html"><![CDATA[iOS | UI调试利器Chisel使用实战(LLDB调试基础三)]]></title>
-    <link href="http://mrshang110.github.io/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/"/>
-    <updated>2016-12-11T17:13:00+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2016/12/11/ios-|-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san</id>
-    <content type="html"><![CDATA[<blockquote><p>上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解.</p></blockquote>
+    <title type="html"><![CDATA[iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚]]></title>
+    <link href="http://mrshang110.github.io/blog/2016/11/21/ios-%7C-bool/"/>
+    <updated>2016-11-21T20:39:12+08:00</updated>
+    <id>http://mrshang110.github.io/blog/2016/11/21/ios-|-bool</id>
+    <content type="html"><![CDATA[<p>每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境.</p>
 
-<p>演示是的代码状态如下图:</p>
+<p>  <img src="http://upload-images.jianshu.io/upload_images/1523795-cca8c9ed5d930d18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="傻傻分不清楚" /></p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-9774a25cc28abbec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="演示代码" />
-<strong><em>pclass命令</em></strong>
-这个命令可以打印类的继承关系,有了它,再也不怕记不住继承关系了.实例如下所示:
-<code>
-// 情景:打印时,断点在Viewcontroller中
-(lldb) pclass self
-ViewController
-   | UIViewController
-   |    | UIResponder
-   |    |    | NSObject
-(lldb)
-</code></p>
-
-<p><strong><em>pviews命令</em></strong>
-这个命令可以打印自本视图起的视图层次和视图详细信息.打印中,竖线<code>|</code>缩进代表父子关系.
-<code>
-&lt;UIView: 0x7f824977cbc0; frame = (0 0; 375 667); autoresize = W+H; layer = &lt;CALayer: 0x7f824977be60&gt;&gt;
-   | &lt;_UILayoutGuide: 0x7f8249442020; frame = (0 0; 0 0); hidden = YES; layer = &lt;CALayer: 0x7f824977ab50&gt;&gt;
-   | &lt;_UILayoutGuide: 0x7f82495867a0; frame = (0 667; 0 0); hidden = YES; layer = &lt;CALayer: 0x7f824957fd70&gt;&gt;
-   | &lt;UIView: 0x7f824977bf30; frame = (0 0; 300 300); layer = &lt;CALayer: 0x7f824977c0a0&gt;&gt;
-   |    | &lt;UIView: 0x7f8249587770; frame = (0 0; 100 100); layer = &lt;CALayer: 0x7f82495094d0&gt;&gt;
-</code></p>
-
-<ol>
-<li>利用打印信息中的地址,可以针对每个视图进行操作.比如修改其颜色/显示/隐藏等.</li>
-</ol>
+<ul>
+<li>bool 这个类型,是c语言&lt;stdbool.h>的类型,这个类型接收值后,非0即1.即便给a=1000000000000000000000000000000000000000000000000000000000000000000000.0也不会有任何警告,bool只会判断这个这个值是否为0.这里需要注意浮点数误差.</li>
+</ul>
 
 
-<p>2.利用属性值,判断布局问题.比如查看每个子视图没有显示的原因.</p>
-
-<p><strong><em>pvc命令</em></strong>
-该命令和pviews功能相同,前者打印的控制器的层次关系和信息,而后者是针对视图的.</p>
-
-<p><strong><em>visualize命令</em></strong>
-这个命令可以通过mac上自带的的图片预览软件直接查看视图,如image,view等.即便视图还没渲染出来时,也可以查看.</p>
-
-<pre><code>// 情景:视图还没渲染出来 
-(lldb) visualize self.view
+<pre><code>bool Defined in stdbool.h, ISO C/C++ standard type
+false Now defined in stdbool.h
+true Now defined in stdbool.h    
 </code></pre>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-bb354fb161a01938.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="visualize命令查看图" />
-<img src="http://upload-images.jianshu.io/upload_images/1523795-2728936a281500b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="模拟器视图还未渲染" /></p>
+<ul>
+<li>boolean_t根据系统架构等定义不同,本质上是 unsigned int 或者 int,iPhone5s后开始逐渐采用arm64架构.</li>
+</ul>
 
-<p><strong><em>border命令</em></strong>
-该命令可以显示视图的边界,在视图层次比较复杂时,更容易找到目标视图.</p>
 
-<pre><code>// 显示redView边界 
-//  --color/-c &lt;color&gt;; Type: string
-(lldb) border redView -c green
-(lldb) visualize self.view
-(lldb) 
+<pre><code>#if defined(__x86_64__) &amp;&amp; !defined(KERNEL)
+typedef unsigned int boolean_t;
+#else
+typedef int boolean_t;
+#endif
 </code></pre>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-fd89d38b7284a6ad.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="显示边界" /></p>
+<ul>
+<li>Boolean本质上就是unsigned char</li>
+</ul>
 
-<p><strong><em>fv命令</em></strong>
-该命令是搜索上下文特定的视图,可以通过正则表达式匹配.
-<code>
-(lldb) fv scrollView
-0x18d3b8c0 UIScrollView
-0x137d0c50 UIScrollView
-0x131b1580 UIScrollView
-0x131b2070 UIScrollView
-</code></p>
 
-<p><strong><em>fvc命令</em></strong>
-该命令同fv,类似于pviews和pvc的关系.
-<code>
-(lldb) fvc Home
-0x1393fe00 HomeFeedsViewController
-</code></p>
-
-<p><strong><em>hide/show命令</em></strong>
-hide隐藏视图,便于看清层次关系.show显示隐藏视图.
-<code>
-// 隐藏blueView
-(lldb) hide blueView
-(lldb) visualize self.view
-</code>
-<img src="http://upload-images.jianshu.io/upload_images/1523795-ebd6cdc5258cf34c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="隐藏blueView" /></p>
-
-<p><strong><em> pinternals命令</em></strong>
-这个命令主要是打印View内部的详细信息,可以根据信息确定View的状态.</p>
-
-<pre><code>// 查看redView内部结构
-(lldb) pinternals redView
-(UIView) $2 = {
-  UIResponder = {
-    NSObject = {
-      isa = UIView
-    }
-    _hasAlternateNextResponder = false
-    _hasInputAssistantItem = false
-  }
-  _constraintsExceptingSubviewAutoresizingConstraints = nil
-  _cachedTraitCollection = nil
-  _layer = 0x00007f8bc1724870
-  _layerRetained = nil
-  _gestureInfo = nil
-  _gestureRecognizers = nil
-  _subviewCache = 0x00007f8bc1701900
-  _templateLayoutView = nil
-  _charge = 0
-  _tag = 0
-  _viewDelegate = nil
-  _backgroundColorSystemColorName = 0xa0014029b0c20c58 @"redColor"
-  _countOfMotionEffectsInSubtree = 0
-  _countOfTraitChangeRespondersInDirectSubtree = 0
-  _cachedScreenScale = 0
-  _retainCount = 2
-  _tintAdjustmentDimmingCount = 0
-  _shouldArchiveUIAppearanceTags = false
-  _interactionTintColor = nil
-  _layoutMarginsGuide = nil
-  _minXVariable = nil
-  _minYVariable = nil
-  _boundsWidthVariable = nil
-  _boundsHeightVariable = nil
-  _layoutEngine = nil
-  _layoutDebuggingIdentifier = nil
-  _internalConstraints = nil
-  _continuousCornerRadius = 0
-  _countOfFocusedAncestorTrackingViewsInSubtree = 0
-  _semanticContentAttribute = 0
-  __presentationControllerToNotifyOnLayoutSubviews = nil
-  _previewingSegueTemplateStorage = nil
-  _contentSizeNotificationToken = nil
-  _readableContentGuide = nil
-}
+<pre><code>    Boolean types and values
+    Boolean Mac OS historic type, sizeof(Boolean)==1
+    typedef unsigned char Boolean;
 </code></pre>
 
-<blockquote><p>以上这些在调试UI时比较常用且比较方便.Chisel提供的命令不止这些,可以通过help命令查看使用方法.</p></blockquote>
+<ul>
+<li>BOOL在64位的iPhone或者watch,就是bool类型.</li>
+</ul>
 
-<p>*温馨提示: cmd + k 可以清除控制台输出.</p>
+
+<pre><code>/// Type to represent a boolean value.
+#if (TARGET_OS_IPHONE &amp;&amp; __LP64__)  ||  TARGET_OS_WATCH
+typedef bool BOOL;
+#else
+typedef signed char BOOL; 
+</code></pre>
+
+<p><strong>温馨提示</strong>:不要把数组大小,逻辑位运算符等操作结果直接赋给BOOl.如BOOL haveItems = array.count;这在旧的设备上可能有因为仅截取最后一位发生逻辑错误.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS | XCode8新增可视化循环引用调试工具]]></title>
+    <link href="http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/"/>
+    <updated>2016-10-28T17:47:19+08:00</updated>
+    <id>http://mrshang110.github.io/blog/2016/10/28/ios-|-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju</id>
+    <content type="html"><![CDATA[<p>英文地址:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips">Memory Graph Debugger Tips</a></p>
+
+<pre><code>译者的话:
+目前关于Debug Memory Graph的中文资料很少,
+甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
+来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片).
+交流中很少翻译成中文或者没有统一中文翻译的词,依然使用英文原词.
+</code></pre>
+
+<h3>Memory Graph Debugger 使用方法</h3>
+
+<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.
+-  点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-57d6616bc0f3969b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="调试工具栏" /></p>
+
+<ul>
+<li><p>关闭僵(zombies)尸对象.开启scheme检查僵尸对象功能会干扰此功能(提示:一般情况下关闭僵尸对象功能,除非你必须使用).</p></li>
+<li><p>开启Malloc Stack Logging(我觉得开启它以展示栈回溯(backtraces)是个正确选择).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-59a3a2b9aa09ef7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zombies and Malloc Stack Logging" /></p></li>
+<li><p>在Xcode中显示右边栏,点击内存对象图中的对象查看它的类,层次和栈回溯.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-20236dc8943da8b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="右边栏" /></p></li>
+<li><p>对象之间会有一根带有标签的线,这根线代表对象的引用关系.点击线,在右边栏可以看到引用类型(weak, strong or unknown)和引用关系(source and destination).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-137cd3b9e3ba6be9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20161017_1.png" /></p></li>
+<li><p>单击对象右上角中心带有双向箭头的圆环,展开对象树.点击相同地方复原.点击左边栏对象可以聚焦对应对象上.</p></li>
+<li><p>在左边栏寻找紫色的感叹号,这些地方可能有问题.然而,大部分问题检测不到,需要你仔细检查(译者注:不要因为这就对Memory Graph Debugger失望,借助它,你可以自己发现这些问题).</p></li>
+</ul>
+
+
+<p> 我已经使用它解决了两个bug,都节约了很多时间.很有必要提醒你你可能碰到的问题.</p>
+
+<h3>Notification block</h3>
+
+<p>我个人不会用block设置一个NSNotification观察者,在 init 和 viewDidLoad里添加没有关联的代码,会使代码变得杂乱并且很危险.</p>
+
+<p>除非你很细心,否则它很危险.它可能捕获一个引用自己的强引用,造成对象释放不掉.我不喜欢像这需要做一些额外处理的APIs.</p>
+
+<p>很确定,这只是其中一例.</p>
+
+<p>在memory graph debugger工具中,capture标签告诉我们哪里捕获了block,通过它,你可以很快找到它.</p>
+
+<p>(参阅:来自2015年的:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips"> How Not to Crash #3: NSNotification.</a>)</p>
+
+<h3>View controller / view retain cycle</h3>
+
+<p>编程的一般原则是对象应该知道其他们的children,但不应该知道它们的parents(<em>译者注:此处的对象指View controller or view retain cycle</em>).</p>
+
+<p>然而,有些时候视图需要知道其所在的控制器.这不是常常需要,但一些时候是不得已的办法.</p>
+
+<p>编程规则也指出child需要知道parent,依然不能强引用parent.</p>
+
+<p>确实一个保留引用问题的就发生了:一个视图保留了它所在的视图控制器.这个例子解决办法就是改用弱引用.</p>
+
+<p>再一次,memory graph debugger工具使我准确地发现了这个bug.现在,我可以看到app里发生了什么,这是以前不可能的事.</p>
+
+<blockquote><p>如果您有什么问题,欢迎一起探讨.转载请注明出处.</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS | 开发中你可能没有留意的那些事]]></title>
+    <link href="http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/"/>
+    <updated>2016-10-11T17:33:45+08:00</updated>
+    <id>http://mrshang110.github.io/blog/2016/10/11/ios-|-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian</id>
+    <content type="html"><![CDATA[<p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
+
+<p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
+
+<p>其实广告也算的上一条你没留意的那些事,姑且算作第0条吧,至此,广告结束.</p>
+
+<h4>动态语言与静态语言</h4>
+
+<p>写了几年的Object-C代码,但问起Object-C之父是谁,你真的可能不知道.Object-C是美国人布•确斯(Brad Cox)于1980年年初发明的动态语言.与其同时代的C++一样,都是在C语言基础加上了面向对象的特性扩充而成的.虽然两者都是基于C语言扩充的,但它们实现机制差异很大.前者是动态语言,后者是静态语言.</p>
+
+<p>在想理解动态与静态语言之间的区别时,请你思考一个问题:如何写一个编译器?你在开什么玩笑,写编译器?</p>
+
+<p>这里只是让你思考一下,就是你真写出一个编译器,也很难超越现有的(我不是看不起你,因为能写编译器的哪有时间来看我的随笔).</p>
+
+<p>1.如果写一个C语言编译器,主要需要按照语法规则实现一个LALR语法分析器,把函数名转化为一个相对内存地址,函数调用转化为跳转指令.</p>
+
+<p>2.如果加上对象呢?无非就是在让编译器绕个弯子,把函数限制在类里,调用时先找到对象,然后在调用函数.</p>
+
+<p>3.如果加上动态特性,就不得不把类的实现部分抽象出来,实现一套运行时系统.动态语言编译器甚至保留部分代码里的sytax名称,名称错误检查,运行时系统环境注册的所有全局的类/函数/变量等信息,可以不断为这个层增加必要的信息.函数调用时,先从这个运行时系统环境里检测所有可能的参数再做跳转.</p>
+
+<p>动态语言的好处由上面的介绍,可想而知: 调用一个函数时,跳转到一个非法地址,动态语言的编译器和运行时会帮助开发者过滤掉这些问题.这是静态语言很难实现的.运行时使得程序更加灵活,关于运行时的使用,网上资料太多了,请读者自行查阅.</p>
+
+<pre><code>// 此处仅是过滤非法地址的简单一例
+if ([self.delegate respondsToSelector:@selector(action)])
+</code></pre>
+
+<p>动态语言也有缺点,和静态语言相比,由于其一个分CPU计算耗在了运行时中,效率会低一些.灵活是有代价的,从现在的硬件来看,牺牲点效率是值得的.在上面也介绍了,动态语言由于运行时系统的需要,会保留一些源码级别的程序结构,这给破解带来了方便之门.</p>
+
+<h4>加快编译速度的Module</h4>
+
+<p>关于这个本想自己写一下,发现网上已经有一篇写的还可以,感兴趣的可以阅读下.<a href="http://blog.csdn.net/leemin_ios/article/details/51208642">关于Objective-C，Modules和Autolinking</a>.</p>
+
+<h4>提高运行速度的标记指针</h4>
+
+<p>iPhone 5s时开始使用arm64架构,在这个64位化过程中,一个关键的改进就是引入了标记(tagged)指针.</p>
+
+<p>在32位和64位架构中,指针对齐边界也不一样.例如在32位中,读取内存地址为0x00000001-0x00000005的整数需要两个CPU周期,而0x00000004-0x00000008只有一个CPU周期.这是因为32位架构对齐方式以16字节为边界,也即内存地址最后4位永远为零(标记指针除外).</p>
+
+<p>到了64位架构后,内存地址可达2<sup>64</sup>(千万T字节),这些空间有很多是浪费的,于是,就引入了标记指针来充分利用这些地址空间.</p>
+
+<pre><code> NSNumber *num1 = [NSNumber numberWithInteger:1];
+ NSNumber *num2 = [NSNumber numberWithInteger:2];
+
+ NSLog(@"%p - %p", num1, num2);
+ //输出:0xb000000000000013 - 0xb000000000000023
+
+ NSNumber *num3 = [NSNumber  numberWithInteger:0x1111111111111111];
+ NSLog(@"%p", num3);
+ //输出:0x608000222b00
+</code></pre>
+
+<p>引入标记指针后,在数据不超过60位时,可以利用指针地址的中间60位保存数据,而不必在堆上开辟空间.上面代码中,我们可以看到从倒数第2位开始的60位中,存放的就是数据的值.如果数据太大60位存储不下,就会和过去一样创建对象.</p>
+
+<p>标记指针省去了对象创建/销毁等操作,对运行速度提升很明显.标记指针不止可以用在NSNumber上,字符串等也在用.感兴趣可以阅读<a href="http://www.cocoachina.com/ios/20150918/13449.html">采用Tagged Pointer的字符串</a>了解一下.</p>
+
+<p><strong><em>温馨提示</em></strong> 如果你次创建的NSNumber对象的数值一样,虽然是不同对象,但地址相同,这是苹果对-1到12之间的对象做了缓存.苹果对性能优化这么认真的精神值得每个人学习.</p>
+
+<p>这次先写到这里,下篇随笔继续<code>开发中你可能没有留意的那些事</code>.</p>
+
+<p>参考:
+Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 ]]></content>
   </entry>
   
@@ -402,277 +447,6 @@ UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件�
 <li><p>根据场景重新命名方法.已有的方法实现可以实现相同的功能,但是根据场景不同,仍要重写一个方法,在内部调用已有方法.</p></li>
 <li><p>if语句不要嵌套过深,一般不要超过3层.代码刚写的时候一般不会有这个问题,多是在后期维护时根据需求不断嵌套.笔者建议修改者尽可能读懂原先逻辑,书写if语句可以并列多个,而不是层层嵌套.</p></li>
 </ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS | 全屏右滑返回]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/"/>
-    <updated>2015-10-01T21:44:23+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/10/01/ios-|-quan-ping-you-hua-fan-hui</id>
-    <content type="html"><![CDATA[<blockquote><p>随着手机屏幕的变大,原来右滑返回略显不够人性化,尤其是对手小的朋友,让我如何单手玩手机.对于app要全屏右滑或保持原生边缘触发,各有说辞,这里不讨论其好坏.</p></blockquote>
-
-<p>下面先看一下实现效果.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-3f950db177173d33.gif?imageMogr2/auto-orient/strip" alt="全屏pop" /></p>
-
-<p>效果还不错吧.当然了,这里的所有效果都是系统实现的.或许你不信,一起看看实现吧.</p>
-
-<pre><code>#import "GLNavigationController.h"
-
-@interface GLNavigationController () &lt;UIGestureRecognizerDelegate&gt;
-
-@end
-
-@implementation GLNavigationController 
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    //  这句很核心 稍后讲解
-    id target = self.interactivePopGestureRecognizer.delegate;
-    //  这句很核心 稍后讲解
-    SEL handler = NSSelectorFromString(@"handleNavigationTransition:");
-    //  获取添加系统边缘触发手势的View
-    UIView *targetView = self.interactivePopGestureRecognizer.view;
-
-    //  创建pan手势 作用范围是全屏
-    UIPanGestureRecognizer * fullScreenGes = [[UIPanGestureRecognizer alloc]initWithTarget:target action:handler];
-    fullScreenGes.delegate = self;
-    [targetView addGestureRecognizer:fullScreenGes];
-
-    // 关闭边缘触发手势 防止和原有边缘手势冲突
-    [self.interactivePopGestureRecognizer setEnabled:NO];
-}
-
-//  防止导航控制器只有一个rootViewcontroller时触发手势
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-//解决与左滑手势冲突  
-  CGPoint translation = [gestureRecognizer translationInView:gestureRecognizer.view];
-    if (translation.x &lt;= 0) {
-        return NO;
-    }
-    return self.childViewControllers.count == 1 ? NO : YES;
-}
-
-@end
-</code></pre>
-
-<p>在实现之前,先推测一下苹果实现pop的大概思路.首先,需要在一个合适的view上添加边缘手势,其次,针对这个手势必然要实现一个方法响应该事件.当然,根据苹果一贯代码风格,处理该事件很可能交给另一个专门的类去处理.</p>
-
-<p>假如以上推测成立,只要获得那个专门处理事件的类和方法,实现全屏pop效果就很简单了.</p>
-
-<p>下面是笔者在分析苹果实现pop的部分信息.看到这,是否若有所悟?</p>
-
-<pre><code>(lldb) pclass [self interactivePopGestureRecognizer]
-// 信息-&gt;1
-UIScreenEdgePanGestureRecognizer
-   | UIPanGestureRecognizer
-   |    | UIGestureRecognizer
-   |    |    | NSObject
-(lldb) pclass [self interactivePopGestureRecognizer].delegate
-// 信息-&gt;2
-_UINavigationInteractiveTransition
-   | _UINavigationInteractiveTransitionBase
-   |    | UIPercentDrivenInteractiveTransition
-   |    |    | NSObject
-(lldb) po [self interactivePopGestureRecognizer]
-// 信息-&gt;3
-&lt;UIScreenEdgePanGestureRecognizer: 0x7fab1243be00; state = Possible; enabled = NO; delaysTouchesBegan = YES; view = &lt;UILayoutContainerView 0x7fab126a4a60&gt;; target= &lt;(action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;)&gt;&gt;
-
-(lldb) po [self interactivePopGestureRecognizer].delegate
-// 信息-&gt;4
-&lt;_UINavigationInteractiveTransition: 0x7fab1243b850&gt;
-
-(lldb) 
-</code></pre>
-
-<p>从信息1中,可以知道interactivePopGestureRecognizer属性并不是UIGestureRecognizer类型的对象,而是其子类UIPanGestureRecognizer的子类UIScreenEdgePanGestureRecognizer类型的对象.</p>
-
-<p>UIScreenEdgePanGestureRecognizer是边缘触发手势,在系统中公有API,里面只有一个edges属性,用来设置具体边缘有效,如左边缘.具体可以参考官方API.</p>
-
-<p>在信息3中,可以看到
-<code>
-target= (action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;)
-</code>
-这样一条信息,里面包含了target和action.看到这是不是很兴奋?iOS开发者再也属性不过的目标-动作模式了.</p>
-
-<p>到这里,已经可以确定苹果的实现方式是通过边缘触发手势处理pop的.这里target是私有的,如何获得呢?于是,网上很多人开始使用runtime来获得一些私有的方法.笔者一般不愿在正式上线的项目中使用runtime获得私有API,虽然不一定会被苹果拒接,但是会有一定风险,毕竟笔者最近人品还没爆发.</p>
-
-<p>有没不用运行时的好方法?</p>
-
-<p>先别着急,继续看信息2和4, interactivePopGestureRecognizer的代理是<em>UINavigationInteractiveTransition,看类名可以想到该类和交互转场相关.分析到这里,基本上可以推测出苹果是通过代理将事件处理委托给了</em>UINavigationInteractiveTransition对象.</p>
-
-<p>在信息3中,可以看到<code>target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;</code>的地址是0x7fab1243b850,信息4中<code>&lt;_UINavigationInteractiveTransition: 0x7fab1243b850&gt;</code>的地址也是0x7fab1243b850.</p>
-
-<p>由以上分析,可以确定苹果的实现方式是将处理边缘触发的事件的任务委托给了<em>UINavigationInteractiveTransition,在</em>UINavigationInteractiveTransition中有处理该事件的方法handleNavigationTransition:.</p>
-
-<h4>代码分析</h4>
-
-<pre><code>id target = self.interactivePopGestureRecognizer.delegate;
-</code></pre>
-
-<p>这句代码目的是获取事件处理对象.以便自己添加的手势可以把事件处理委托给它.</p>
-
-<pre><code class="">SEL handler = NSSelectorFromString(@"handleNavigationTransition:"); 
-</code></pre>
-
-<p>这句就是获取委托对象里的处理方法.</p>
-
-<pre><code>    UIPanGestureRecognizer * fullScreenGes = [[UIPanGestureRecognizer alloc]initWithTarget:target action:handler];
-    fullScreenGes.delegate = self;
-    [targetView addGestureRecognizer:fullScreenGes];
-</code></pre>
-
-<p>这几句就是添加自己的全屏手势,通过目标-动作模式把任务交给了系统委托对象处理.</p>
-
-<h4>建议</h4>
-
-<p>如果需要自定制导航时,实现是写在UINavigationController子类中,比较方便.如果不需要,可以单独写一个分类.这里写在GLNavigationController中,其中GLNavigationController.h继承自UINavigationController.</p>
-
-<h4>其他提示</h4>
-
-<ul>
-<li>如果你的导航在不同控制器间有隐藏状态栏的话,隐藏方法需要使用带有animated:参数的方法setNavigationBarHidden: animated:,否则过渡会出问题.</li>
-<li>不用担心审核问题,是可以通过的.</li>
-</ul>
-
-
-<blockquote><p>如果感谢兴趣,转载时请标明文章出处,这是对一个写作者最起码的尊重.每一个写作者写博客都是为了帮助别人,提高自己.欢迎一起交流探讨,共同进步.</p></blockquote>
-
-<p><a href="https://github.com/Mrshang110/SGLFullScreenNavigationController">点击下载源码</a></p>
-
-<p>*温馨提示:如果对笔者分析时使用的工具感兴趣,可以在笔者的博客找到相关文章.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/"/>
-    <updated>2015-06-11T21:05:50+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/06/11/ios-|-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er</id>
-    <content type="html"><![CDATA[<blockquote><p>网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决.</p></blockquote>
-
-<h3>Chisel简介</h3>
-
-<p>Chisel是Facebook开源的一个插件,主要作用是辅助调试iOS App,它对LLDB命令进行了封装.换言之,Chisel就是LLDB命令集合.如果需要,你可以自定制命令.</p>
-
-<h4>安装介绍</h4>
-
-<p>1.更新一下brew,为了可以安装chisel</p>
-
-<blockquote><p>brew update</p></blockquote>
-
-<p>2.你可能还没有安装 Xcode 的 Command Line Tools,在终端运行以下命令进行安装</p>
-
-<blockquote><p>xcode-select &ndash;install</p></blockquote>
-
-<p>3.正式开始安装</p>
-
-<blockquote><p>brew install chisel</p></blockquote>
-
-<p>提示: 如果出现安装被拒绝,可以在每个命令前加上sudo.例如</p>
-
-<blockquote><p>sudo brew update</p></blockquote>
-
-<p> <img src="http://upload-images.jianshu.io/upload_images/1523795-a36418146f4bdd95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="安装过程最关键" /></p>
-
-<p>此时,只需按照提示进行操作,在 <code>~/.lldbinit</code>文件中加入Caveats中的提示,写入的一行命令.</p>
-
-<blockquote><p>命令行键入(粗体部分换成Caveats中的提示的一行命令): echo  <strong><em>command script import /usr/local/Cellar/chisel/1.0.0/libexec/fblldb.py</em></strong> >> ~/.lldbinit</p></blockquote>
-
-<h4>查看安装状态</h4>
-
-<p>1.命令行安装查看</p>
-
-<pre><code>// 1. 在命令行窗口输入lldb
-shang:ios-mf-new shanggaolin$ lldb
-(lldb) command source -s 1 '/Users/shanggaolin/Desktop/missfresh/ios-mf-new/./.lldbinit'
-// 2.在命令行窗口输入help
-(lldb) help
-// 3. 向下翻滚可以看如下命令,说明chisel命令行安装成功
-....
-Current user-defined commands:
-
-  alamborder   -- For more information run 'help alamborder'
-  alamunborder -- For more information run 'help alamunborder'
-  binside      -- For more information run 'help binside'
-  bmessage     -- For more information run 'help bmessage'
-  border       -- For more information run 'help border'
-  caflush      -- For more information run 'help caflush'
-  dcomponents  -- For more information run 'help dcomponents'
-  eobjc        -- For more information run 'help eobjc'
-  eswift       -- For more information run 'help eswift'
-  fa11y        -- For more information run 'help fa11y'
-  flicker      -- For more information run 'help flicker'
-</code></pre>
-
-<p>2.Xcode安装查看</p>
-
-<p> 在Xocde控制台断点状态下输入help,向下翻滚同样可以看到想上面那些命令.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-fd602619d08f9160.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="控制台截图" />
-  现在,已经安装成功了,可以享受Chisel带来的方便了.</p>
-
-<p>*温馨提示:如果你的mac同时安装有不同版本的Xcode,可能会出现在控制台可以输入chisel命令,但是不会出现响应结果.遇到这种情况,换一下Xcode就ok.</p>
-
-<h3>Chisel常用命令</h3>
-
-<p>这里暂时先介绍一些命令作用,以便读者对Chisel有个初步体会.具体操作会在下一篇随笔中具体讲述.</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 命令       </th>
-<th style="text-align:center;"> 作用  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> pviews     </td>
-<td style="text-align:center;"> 递归打印view的描述(详细到常见属性,如 frame = (0 0; 126 126); userInteractionEnabled = NO; layer  = &hellip;) ,显示层级关系</td>
-</tr>
-<tr>
-<td style="text-align:center;"> pvc      </td>
-<td style="text-align:center;">  递归打印Viewcontroller的描述</td>
-</tr>
-<tr>
-<td style="text-align:center;"> visualize </td>
-<td style="text-align:center;"> 可以直接通过mac上Preview.app查看UIImage, CGImageRef, UIView, CALayer, NSData (of an image), UIColor, CIColor, or CGColorRef 等 </td>
-</tr>
-<tr>
-<td style="text-align:center;">fv</td>
-<td style="text-align:center;">搜索内存中的View,可以正则匹配类名</td>
-</tr>
-<tr>
-<td style="text-align:center;">fvc</td>
-<td style="text-align:center;">搜索内存中的ViewController,可以正则匹配类名</td>
-</tr>
-<tr>
-<td style="text-align:center;">show/hide</td>
-<td style="text-align:center;">显示或隐藏一个指定的View,便于观察其后视图</td>
-</tr>
-<tr>
-<td style="text-align:center;">caflush</td>
-<td style="text-align:center;">重新渲染界面</td>
-</tr>
-<tr>
-<td style="text-align:center;">border/unborder</td>
-<td style="text-align:center;">显示视图边界,在视图层次中方便观察</td>
-</tr>
-<tr>
-<td style="text-align:center;">bmessage</td>
-<td style="text-align:center;"> 为从父类继承本类未实现的方法打断点</td>
-</tr>
-<tr>
-<td style="text-align:center;">presponder</td>
-<td style="text-align:center;"> 打印自本视图起的响应链</td>
-</tr>
-<tr>
-<td style="text-align:center;">mask/unmask</td>
-<td style="text-align:center;">在View上添加或隐藏一个透明遮盖层</td>
-</tr>
-</tbody>
-</table>
 
 ]]></content>
   </entry>

@@ -9,15 +9,7 @@
   <meta name="author" content="尚高林">
 
   
-  <meta name="description" content="上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解. 演示是的代码状态如下图: pclass命令
-这个命令可以打印类的继承关系,有了它,再也不怕记不住继承关系了.实例如下所示: 1
-2
-3
-4
-5
-6
-7
-// 情景: &hellip;">
+  <meta name="description" content="每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境. bool 这个类型,是c语言&lt;stdbool.h> &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -82,7 +74,7 @@
       
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a></h1>
+      <h1 class="entry-title"><a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a></h1>
     
     
       <p class="meta">
@@ -91,130 +83,246 @@
 
 
 
-<time class='entry-date' datetime='2016-12-11T17:13:00+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:13 pm</span></time>
+<time class='entry-date' datetime='2016-11-21T20:39:12+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>8:39 pm</span></time>
         
+        
+ | <a href="/blog/2016/11/21/ios-%7C-bool/#comments">Comments</a>
+
       </p>
     
   </header>
 
 
-  <div class="entry-content"><blockquote><p>上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解.</p></blockquote>
+  <div class="entry-content"><p>每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境.</p>
 
-<p>演示是的代码状态如下图:</p>
+<p>  <img src="http://upload-images.jianshu.io/upload_images/1523795-cca8c9ed5d930d18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="傻傻分不清楚" /></p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-9774a25cc28abbec.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="演示代码" />
-<strong><em>pclass命令</em></strong>
-这个命令可以打印类的继承关系,有了它,再也不怕记不住继承关系了.实例如下所示:</p>
+<ul>
+<li>bool 这个类型,是c语言&lt;stdbool.h>的类型,这个类型接收值后,非0即1.即便给a=1000000000000000000000000000000000000000000000000000000000000000000000.0也不会有任何警告,bool只会判断这个这个值是否为0.这里需要注意浮点数误差.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bool Defined in stdbool.h, ISO C/C++ standard type
+</span><span class='line'>false Now defined in stdbool.h
+</span><span class='line'>true Now defined in stdbool.h    </span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>boolean_t根据系统架构等定义不同,本质上是 unsigned int 或者 int,iPhone5s后开始逐渐采用arm64架构.</li>
+</ul>
+
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 情景:打印时,断点在Viewcontroller中
-</span><span class='line'>(lldb) pclass self
-</span><span class='line'>ViewController
-</span><span class='line'>   | UIViewController
-</span><span class='line'>   |    | UIResponder
-</span><span class='line'>   |    |    | NSObject
-</span><span class='line'>(lldb) </span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#if defined(__x86_64__) && !defined(KERNEL)
+</span><span class='line'>typedef unsigned int boolean_t;
+</span><span class='line'>#else
+</span><span class='line'>typedef int boolean_t;
+</span><span class='line'>#endif</span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong><em>pviews命令</em></strong>
-这个命令可以打印自本视图起的视图层次和视图详细信息.打印中,竖线<code>|</code>缩进代表父子关系.</p>
+<ul>
+<li>Boolean本质上就是unsigned char</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Boolean types and values
+</span><span class='line'>Boolean Mac OS historic type, sizeof(Boolean)==1
+</span><span class='line'>typedef unsigned char Boolean;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>BOOL在64位的iPhone或者watch,就是bool类型.</li>
+</ul>
+
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;UIView: 0x7f824977cbc0; frame = (0 0; 375 667); autoresize = W+H; layer = &lt;CALayer: 0x7f824977be60&gt;&gt;
-</span><span class='line'>   | &lt;_UILayoutGuide: 0x7f8249442020; frame = (0 0; 0 0); hidden = YES; layer = &lt;CALayer: 0x7f824977ab50&gt;&gt;
-</span><span class='line'>   | &lt;_UILayoutGuide: 0x7f82495867a0; frame = (0 667; 0 0); hidden = YES; layer = &lt;CALayer: 0x7f824957fd70&gt;&gt;
-</span><span class='line'>   | &lt;UIView: 0x7f824977bf30; frame = (0 0; 300 300); layer = &lt;CALayer: 0x7f824977c0a0&gt;&gt;
-</span><span class='line'>   |    | &lt;UIView: 0x7f8249587770; frame = (0 0; 100 100); layer = &lt;CALayer: 0x7f82495094d0&gt;&gt;</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/// Type to represent a boolean value.
+</span><span class='line'>#if (TARGET_OS_IPHONE && __LP64__)  ||  TARGET_OS_WATCH
+</span><span class='line'>typedef bool BOOL;
+</span><span class='line'>#else
+</span><span class='line'>typedef signed char BOOL; </span></code></pre></td></tr></table></div></figure>
 
 
-<ol>
-<li>利用打印信息中的地址,可以针对每个视图进行操作.比如修改其颜色/显示/隐藏等.</li>
-</ol>
+<p><strong>温馨提示</strong>:不要把数组大小,逻辑位运算符等操作结果直接赋给BOOl.如BOOL haveItems = array.count;这在旧的设备上可能有因为仅截取最后一位发生逻辑错误.</p>
+</div>
+  
+  
 
 
-<p>2.利用属性值,判断布局问题.比如查看每个子视图没有显示的原因.</p>
-
-<p><strong><em>pvc命令</em></strong>
-该命令和pviews功能相同,前者打印的控制器的层次关系和信息,而后者是针对视图的.</p>
-
-<p><strong><em>visualize命令</em></strong>
-这个命令可以通过mac上自带的的图片预览软件直接查看视图,如image,view等.即便视图还没渲染出来时,也可以查看.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 情景:视图还没渲染出来 
-</span><span class='line'>(lldb) visualize self.view</span></code></pre></td></tr></table></div></figure>
-
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-bb354fb161a01938.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="visualize命令查看图" />
-<img src="http://upload-images.jianshu.io/upload_images/1523795-2728936a281500b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="模拟器视图还未渲染" /></p>
-
-<p><strong><em>border命令</em></strong>
-该命令可以显示视图的边界,在视图层次比较复杂时,更容易找到目标视图.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 显示redView边界 
-</span><span class='line'>//  --color/-c &lt;color&gt;; Type: string
-</span><span class='line'>(lldb) border redView -c green
-</span><span class='line'>(lldb) visualize self.view
-</span><span class='line'>(lldb) </span></code></pre></td></tr></table></div></figure>
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-fd89d38b7284a6ad.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="显示边界" /></p>
 
-<p><strong><em>fv命令</em></strong>
-该命令是搜索上下文特定的视图,可以通过正则表达式匹配.</p>
+
+<time class='entry-date' datetime='2016-10-28T17:47:19+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:47 pm</span></time>
+        
+        
+ | <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>英文地址:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips">Memory Graph Debugger Tips</a></p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(lldb) fv scrollView
-</span><span class='line'>0x18d3b8c0 UIScrollView
-</span><span class='line'>0x137d0c50 UIScrollView
-</span><span class='line'>0x131b1580 UIScrollView
-</span><span class='line'>0x131b2070 UIScrollView</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>译者的话:
+</span><span class='line'>目前关于Debug Memory Graph的中文资料很少,
+</span><span class='line'>甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
+</span><span class='line'>来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片).
+</span><span class='line'>交流中很少翻译成中文或者没有统一中文翻译的词,依然使用英文原词.</span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong><em>fvc命令</em></strong>
-该命令同fv,类似于pviews和pvc的关系.</p>
+<h3>Memory Graph Debugger 使用方法</h3>
+
+<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.
+-  点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-57d6616bc0f3969b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="调试工具栏" /></p>
+
+<ul>
+<li><p>关闭僵(zombies)尸对象.开启scheme检查僵尸对象功能会干扰此功能(提示:一般情况下关闭僵尸对象功能,除非你必须使用).</p></li>
+<li><p>开启Malloc Stack Logging(我觉得开启它以展示栈回溯(backtraces)是个正确选择).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-59a3a2b9aa09ef7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zombies and Malloc Stack Logging" /></p></li>
+<li><p>在Xcode中显示右边栏,点击内存对象图中的对象查看它的类,层次和栈回溯.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-20236dc8943da8b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="右边栏" /></p></li>
+<li><p>对象之间会有一根带有标签的线,这根线代表对象的引用关系.点击线,在右边栏可以看到引用类型(weak, strong or unknown)和引用关系(source and destination).
+<img src="http://upload-images.jianshu.io/upload_images/1523795-137cd3b9e3ba6be9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20161017_1.png" /></p></li>
+<li><p>单击对象右上角中心带有双向箭头的圆环,展开对象树.点击相同地方复原.点击左边栏对象可以聚焦对应对象上.</p></li>
+<li><p>在左边栏寻找紫色的感叹号,这些地方可能有问题.然而,大部分问题检测不到,需要你仔细检查(译者注:不要因为这就对Memory Graph Debugger失望,借助它,你可以自己发现这些问题).</p></li>
+</ul>
+
+
+<p> 我已经使用它解决了两个bug,都节约了很多时间.很有必要提醒你你可能碰到的问题.</p>
+
+<h3>Notification block</h3>
+
+<p>我个人不会用block设置一个NSNotification观察者,在 init 和 viewDidLoad里添加没有关联的代码,会使代码变得杂乱并且很危险.</p>
+
+<p>除非你很细心,否则它很危险.它可能捕获一个引用自己的强引用,造成对象释放不掉.我不喜欢像这需要做一些额外处理的APIs.</p>
+
+<p>很确定,这只是其中一例.</p>
+
+<p>在memory graph debugger工具中,capture标签告诉我们哪里捕获了block,通过它,你可以很快找到它.</p>
+
+<p>(参阅:来自2015年的:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips"> How Not to Crash #3: NSNotification.</a>)</p>
+
+<h3>View controller / view retain cycle</h3>
+
+<p>编程的一般原则是对象应该知道其他们的children,但不应该知道它们的parents(<em>译者注:此处的对象指View controller or view retain cycle</em>).</p>
+
+<p>然而,有些时候视图需要知道其所在的控制器.这不是常常需要,但一些时候是不得已的办法.</p>
+
+<p>编程规则也指出child需要知道parent,依然不能强引用parent.</p>
+
+<p>确实一个保留引用问题的就发生了:一个视图保留了它所在的视图控制器.这个例子解决办法就是改用弱引用.</p>
+
+<p>再一次,memory graph debugger工具使我准确地发现了这个bug.现在,我可以看到app里发生了什么,这是以前不可能的事.</p>
+
+<blockquote><p>如果您有什么问题,欢迎一起探讨.转载请注明出处.</p></blockquote>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-10-11T17:33:45+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:33 pm</span></time>
+        
+        
+ | <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
+
+<p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
+
+<p>其实广告也算的上一条你没留意的那些事,姑且算作第0条吧,至此,广告结束.</p>
+
+<h4>动态语言与静态语言</h4>
+
+<p>写了几年的Object-C代码,但问起Object-C之父是谁,你真的可能不知道.Object-C是美国人布•确斯(Brad Cox)于1980年年初发明的动态语言.与其同时代的C++一样,都是在C语言基础加上了面向对象的特性扩充而成的.虽然两者都是基于C语言扩充的,但它们实现机制差异很大.前者是动态语言,后者是静态语言.</p>
+
+<p>在想理解动态与静态语言之间的区别时,请你思考一个问题:如何写一个编译器?你在开什么玩笑,写编译器?</p>
+
+<p>这里只是让你思考一下,就是你真写出一个编译器,也很难超越现有的(我不是看不起你,因为能写编译器的哪有时间来看我的随笔).</p>
+
+<p>1.如果写一个C语言编译器,主要需要按照语法规则实现一个LALR语法分析器,把函数名转化为一个相对内存地址,函数调用转化为跳转指令.</p>
+
+<p>2.如果加上对象呢?无非就是在让编译器绕个弯子,把函数限制在类里,调用时先找到对象,然后在调用函数.</p>
+
+<p>3.如果加上动态特性,就不得不把类的实现部分抽象出来,实现一套运行时系统.动态语言编译器甚至保留部分代码里的sytax名称,名称错误检查,运行时系统环境注册的所有全局的类/函数/变量等信息,可以不断为这个层增加必要的信息.函数调用时,先从这个运行时系统环境里检测所有可能的参数再做跳转.</p>
+
+<p>动态语言的好处由上面的介绍,可想而知: 调用一个函数时,跳转到一个非法地址,动态语言的编译器和运行时会帮助开发者过滤掉这些问题.这是静态语言很难实现的.运行时使得程序更加灵活,关于运行时的使用,网上资料太多了,请读者自行查阅.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(lldb) fvc Home
-</span><span class='line'>0x1393fe00 HomeFeedsViewController</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 此处仅是过滤非法地址的简单一例
+</span><span class='line'>if ([self.delegate respondsToSelector:@selector(action)])</span></code></pre></td></tr></table></div></figure>
 
 
-<p><strong><em>hide/show命令</em></strong>
-hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
+<p>动态语言也有缺点,和静态语言相比,由于其一个分CPU计算耗在了运行时中,效率会低一些.灵活是有代价的,从现在的硬件来看,牺牲点效率是值得的.在上面也介绍了,动态语言由于运行时系统的需要,会保留一些源码级别的程序结构,这给破解带来了方便之门.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 隐藏blueView
-</span><span class='line'>(lldb) hide blueView
-</span><span class='line'>(lldb) visualize self.view</span></code></pre></td></tr></table></div></figure>
+<h4>加快编译速度的Module</h4>
 
+<p>关于这个本想自己写一下,发现网上已经有一篇写的还可以,感兴趣的可以阅读下.<a href="http://blog.csdn.net/leemin_ios/article/details/51208642">关于Objective-C，Modules和Autolinking</a>.</p>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-ebd6cdc5258cf34c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="隐藏blueView" /></p>
+<h4>提高运行速度的标记指针</h4>
 
-<p><strong><em> pinternals命令</em></strong>
-这个命令主要是打印View内部的详细信息,可以根据信息确定View的状态.</p>
+<p>iPhone 5s时开始使用arm64架构,在这个64位化过程中,一个关键的改进就是引入了标记(tagged)指针.</p>
+
+<p>在32位和64位架构中,指针对齐边界也不一样.例如在32位中,读取内存地址为0x00000001-0x00000005的整数需要两个CPU周期,而0x00000004-0x00000008只有一个CPU周期.这是因为32位架构对齐方式以16字节为边界,也即内存地址最后4位永远为零(标记指针除外).</p>
+
+<p>到了64位架构后,内存地址可达2<sup>64</sup>(千万T字节),这些空间有很多是浪费的,于是,就引入了标记指针来充分利用这些地址空间.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -225,92 +333,27 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 查看redView内部结构
-</span><span class='line'>(lldb) pinternals redView
-</span><span class='line'>(UIView) $2 = {
-</span><span class='line'>  UIResponder = {
-</span><span class='line'>    NSObject = {
-</span><span class='line'>      isa = UIView
-</span><span class='line'>    }
-</span><span class='line'>    _hasAlternateNextResponder = false
-</span><span class='line'>    _hasInputAssistantItem = false
-</span><span class='line'>  }
-</span><span class='line'>  _constraintsExceptingSubviewAutoresizingConstraints = nil
-</span><span class='line'>  _cachedTraitCollection = nil
-</span><span class='line'>  _layer = 0x00007f8bc1724870
-</span><span class='line'>  _layerRetained = nil
-</span><span class='line'>  _gestureInfo = nil
-</span><span class='line'>  _gestureRecognizers = nil
-</span><span class='line'>  _subviewCache = 0x00007f8bc1701900
-</span><span class='line'>  _templateLayoutView = nil
-</span><span class='line'>  _charge = 0
-</span><span class='line'>  _tag = 0
-</span><span class='line'>  _viewDelegate = nil
-</span><span class='line'>  _backgroundColorSystemColorName = 0xa0014029b0c20c58 @"redColor"
-</span><span class='line'>  _countOfMotionEffectsInSubtree = 0
-</span><span class='line'>  _countOfTraitChangeRespondersInDirectSubtree = 0
-</span><span class='line'>  _cachedScreenScale = 0
-</span><span class='line'>  _retainCount = 2
-</span><span class='line'>  _tintAdjustmentDimmingCount = 0
-</span><span class='line'>  _shouldArchiveUIAppearanceTags = false
-</span><span class='line'>  _interactionTintColor = nil
-</span><span class='line'>  _layoutMarginsGuide = nil
-</span><span class='line'>  _minXVariable = nil
-</span><span class='line'>  _minYVariable = nil
-</span><span class='line'>  _boundsWidthVariable = nil
-</span><span class='line'>  _boundsHeightVariable = nil
-</span><span class='line'>  _layoutEngine = nil
-</span><span class='line'>  _layoutDebuggingIdentifier = nil
-</span><span class='line'>  _internalConstraints = nil
-</span><span class='line'>  _continuousCornerRadius = 0
-</span><span class='line'>  _countOfFocusedAncestorTrackingViewsInSubtree = 0
-</span><span class='line'>  _semanticContentAttribute = 0
-</span><span class='line'>  __presentationControllerToNotifyOnLayoutSubviews = nil
-</span><span class='line'>  _previewingSegueTemplateStorage = nil
-</span><span class='line'>  _contentSizeNotificationToken = nil
-</span><span class='line'>  _readableContentGuide = nil
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'> NSNumber *num1 = [NSNumber numberWithInteger:1];
+</span><span class='line'> NSNumber *num2 = [NSNumber numberWithInteger:2];
+</span><span class='line'>    
+</span><span class='line'> NSLog(@"%p - %p", num1, num2);
+</span><span class='line'> //输出:0xb000000000000013 - 0xb000000000000023
+</span><span class='line'>
+</span><span class='line'> NSNumber *num3 = [NSNumber  numberWithInteger:0x1111111111111111];
+</span><span class='line'> NSLog(@"%p", num3);
+</span><span class='line'> //输出:0x608000222b00</span></code></pre></td></tr></table></div></figure>
 
 
-<blockquote><p>以上这些在调试UI时比较常用且比较方便.Chisel提供的命令不止这些,可以通过help命令查看使用方法.</p></blockquote>
+<p>引入标记指针后,在数据不超过60位时,可以利用指针地址的中间60位保存数据,而不必在堆上开辟空间.上面代码中,我们可以看到从倒数第2位开始的60位中,存放的就是数据的值.如果数据太大60位存储不下,就会和过去一样创建对象.</p>
 
-<p>*温馨提示: cmd + k 可以清除控制台输出.</p>
+<p>标记指针省去了对象创建/销毁等操作,对运行速度提升很明显.标记指针不止可以用在NSNumber上,字符串等也在用.感兴趣可以阅读<a href="http://www.cocoachina.com/ios/20150918/13449.html">采用Tagged Pointer的字符串</a>了解一下.</p>
+
+<p><strong><em>温馨提示</em></strong> 如果你次创建的NSNumber对象的数值一样,虽然是不同对象,但地址相同,这是苹果对-1到12之间的对象做了缓存.苹果对性能优化这么认真的精神值得每个人学习.</p>
+
+<p>这次先写到这里,下篇随笔继续<code>开发中你可能没有留意的那些事</code>.</p>
+
+<p>参考:
+Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
 </div>
   
   
@@ -334,6 +377,9 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 
 <time class='entry-date' datetime='2015-11-12T19:50:49+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:50 pm</span></time>
         
+        
+ | <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/#comments">Comments</a>
+
       </p>
     
   </header>
@@ -523,6 +569,9 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 
 <time class='entry-date' datetime='2015-10-11T16:31:12+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:31 pm</span></time>
         
+        
+ | <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/#comments">Comments</a>
+
       </p>
     
   </header>
@@ -693,753 +742,9 @@ UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件�
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-10-01T21:44:23+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>随着手机屏幕的变大,原来右滑返回略显不够人性化,尤其是对手小的朋友,让我如何单手玩手机.对于app要全屏右滑或保持原生边缘触发,各有说辞,这里不讨论其好坏.</p></blockquote>
-
-<p>下面先看一下实现效果.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-3f950db177173d33.gif?imageMogr2/auto-orient/strip" alt="全屏pop" /></p>
-
-<p>效果还不错吧.当然了,这里的所有效果都是系统实现的.或许你不信,一起看看实现吧.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#import "GLNavigationController.h"
-</span><span class='line'>
-</span><span class='line'>@interface GLNavigationController () &lt;UIGestureRecognizerDelegate&gt;
-</span><span class='line'>
-</span><span class='line'>@end
-</span><span class='line'>
-</span><span class='line'>@implementation GLNavigationController 
-</span><span class='line'>
-</span><span class='line'>- (void)viewDidLoad {
-</span><span class='line'>    [super viewDidLoad];
-</span><span class='line'>    //  这句很核心 稍后讲解
-</span><span class='line'>    id target = self.interactivePopGestureRecognizer.delegate;
-</span><span class='line'>    //  这句很核心 稍后讲解
-</span><span class='line'>    SEL handler = NSSelectorFromString(@"handleNavigationTransition:");
-</span><span class='line'>    //  获取添加系统边缘触发手势的View
-</span><span class='line'>    UIView *targetView = self.interactivePopGestureRecognizer.view;
-</span><span class='line'>    
-</span><span class='line'>    //  创建pan手势 作用范围是全屏
-</span><span class='line'>    UIPanGestureRecognizer * fullScreenGes = [[UIPanGestureRecognizer alloc]initWithTarget:target action:handler];
-</span><span class='line'>    fullScreenGes.delegate = self;
-</span><span class='line'>    [targetView addGestureRecognizer:fullScreenGes];
-</span><span class='line'>    
-</span><span class='line'>    // 关闭边缘触发手势 防止和原有边缘手势冲突
-</span><span class='line'>    [self.interactivePopGestureRecognizer setEnabled:NO];
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>//  防止导航控制器只有一个rootViewcontroller时触发手势
-</span><span class='line'>- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-</span><span class='line'>//解决与左滑手势冲突  
-</span><span class='line'>  CGPoint translation = [gestureRecognizer translationInView:gestureRecognizer.view];
-</span><span class='line'>    if (translation.x &lt;= 0) {
-</span><span class='line'>        return NO;
-</span><span class='line'>    }
-</span><span class='line'>    return self.childViewControllers.count == 1 ? NO : YES;
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>@end
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在实现之前,先推测一下苹果实现pop的大概思路.首先,需要在一个合适的view上添加边缘手势,其次,针对这个手势必然要实现一个方法响应该事件.当然,根据苹果一贯代码风格,处理该事件很可能交给另一个专门的类去处理.</p>
-
-<p>假如以上推测成立,只要获得那个专门处理事件的类和方法,实现全屏pop效果就很简单了.</p>
-
-<p>下面是笔者在分析苹果实现pop的部分信息.看到这,是否若有所悟?</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>(lldb) pclass [self interactivePopGestureRecognizer]
-</span><span class='line'>// 信息-&gt;1
-</span><span class='line'>UIScreenEdgePanGestureRecognizer
-</span><span class='line'>   | UIPanGestureRecognizer
-</span><span class='line'>   |    | UIGestureRecognizer
-</span><span class='line'>   |    |    | NSObject
-</span><span class='line'>(lldb) pclass [self interactivePopGestureRecognizer].delegate
-</span><span class='line'>// 信息-&gt;2
-</span><span class='line'>_UINavigationInteractiveTransition
-</span><span class='line'>   | _UINavigationInteractiveTransitionBase
-</span><span class='line'>   |    | UIPercentDrivenInteractiveTransition
-</span><span class='line'>   |    |    | NSObject
-</span><span class='line'>(lldb) po [self interactivePopGestureRecognizer]
-</span><span class='line'>// 信息-&gt;3
-</span><span class='line'>&lt;UIScreenEdgePanGestureRecognizer: 0x7fab1243be00; state = Possible; enabled = NO; delaysTouchesBegan = YES; view = &lt;UILayoutContainerView 0x7fab126a4a60&gt;; target= &lt;(action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;)&gt;&gt;
-</span><span class='line'>
-</span><span class='line'>(lldb) po [self interactivePopGestureRecognizer].delegate
-</span><span class='line'>// 信息-&gt;4
-</span><span class='line'>&lt;_UINavigationInteractiveTransition: 0x7fab1243b850&gt;
-</span><span class='line'>
-</span><span class='line'>(lldb) </span></code></pre></td></tr></table></div></figure>
-
-
-<p>从信息1中,可以知道interactivePopGestureRecognizer属性并不是UIGestureRecognizer类型的对象,而是其子类UIPanGestureRecognizer的子类UIScreenEdgePanGestureRecognizer类型的对象.</p>
-
-<p>UIScreenEdgePanGestureRecognizer是边缘触发手势,在系统中公有API,里面只有一个edges属性,用来设置具体边缘有效,如左边缘.具体可以参考官方API.</p>
-
-<p>在信息3中,可以看到</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>target= (action=handleNavigationTransition:, target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样一条信息,里面包含了target和action.看到这是不是很兴奋?iOS开发者再也属性不过的目标-动作模式了.</p>
-
-<p>到这里,已经可以确定苹果的实现方式是通过边缘触发手势处理pop的.这里target是私有的,如何获得呢?于是,网上很多人开始使用runtime来获得一些私有的方法.笔者一般不愿在正式上线的项目中使用runtime获得私有API,虽然不一定会被苹果拒接,但是会有一定风险,毕竟笔者最近人品还没爆发.</p>
-
-<p>有没不用运行时的好方法?</p>
-
-<p>先别着急,继续看信息2和4, interactivePopGestureRecognizer的代理是<em>UINavigationInteractiveTransition,看类名可以想到该类和交互转场相关.分析到这里,基本上可以推测出苹果是通过代理将事件处理委托给了</em>UINavigationInteractiveTransition对象.</p>
-
-<p>在信息3中,可以看到<code>target=&lt;_UINavigationInteractiveTransition 0x7fab1243b850&gt;</code>的地址是0x7fab1243b850,信息4中<code>&lt;_UINavigationInteractiveTransition: 0x7fab1243b850&gt;</code>的地址也是0x7fab1243b850.</p>
-
-<p>由以上分析,可以确定苹果的实现方式是将处理边缘触发的事件的任务委托给了<em>UINavigationInteractiveTransition,在</em>UINavigationInteractiveTransition中有处理该事件的方法handleNavigationTransition:.</p>
-
-<h4>代码分析</h4>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>id target = self.interactivePopGestureRecognizer.delegate;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这句代码目的是获取事件处理对象.以便自己添加的手势可以把事件处理委托给它.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>SEL handler = NSSelectorFromString(@"handleNavigationTransition:"); </span></code></pre></td></tr></table></div></figure>
-
-
-<p>这句就是获取委托对象里的处理方法.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>UIPanGestureRecognizer * fullScreenGes = [[UIPanGestureRecognizer alloc]initWithTarget:target action:handler];
-</span><span class='line'>fullScreenGes.delegate = self;
-</span><span class='line'>[targetView addGestureRecognizer:fullScreenGes];</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这几句就是添加自己的全屏手势,通过目标-动作模式把任务交给了系统委托对象处理.</p>
-
-<h4>建议</h4>
-
-<p>如果需要自定制导航时,实现是写在UINavigationController子类中,比较方便.如果不需要,可以单独写一个分类.这里写在GLNavigationController中,其中GLNavigationController.h继承自UINavigationController.</p>
-
-<h4>其他提示</h4>
-
-<ul>
-<li>如果你的导航在不同控制器间有隐藏状态栏的话,隐藏方法需要使用带有animated:参数的方法setNavigationBarHidden: animated:,否则过渡会出问题.</li>
-<li>不用担心审核问题,是可以通过的.</li>
-</ul>
-
-
-<blockquote><p>如果感谢兴趣,转载时请标明文章出处,这是对一个写作者最起码的尊重.每一个写作者写博客都是为了帮助别人,提高自己.欢迎一起交流探讨,共同进步.</p></blockquote>
-
-<p><a href="https://github.com/Mrshang110/SGLFullScreenNavigationController">点击下载源码</a></p>
-
-<p>*温馨提示:如果对笔者分析时使用的工具感兴趣,可以在笔者的博客找到相关文章.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-06-11T21:05:50+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:05 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决.</p></blockquote>
-
-<h3>Chisel简介</h3>
-
-<p>Chisel是Facebook开源的一个插件,主要作用是辅助调试iOS App,它对LLDB命令进行了封装.换言之,Chisel就是LLDB命令集合.如果需要,你可以自定制命令.</p>
-
-<h4>安装介绍</h4>
-
-<p>1.更新一下brew,为了可以安装chisel</p>
-
-<blockquote><p>brew update</p></blockquote>
-
-<p>2.你可能还没有安装 Xcode 的 Command Line Tools,在终端运行以下命令进行安装</p>
-
-<blockquote><p>xcode-select &ndash;install</p></blockquote>
-
-<p>3.正式开始安装</p>
-
-<blockquote><p>brew install chisel</p></blockquote>
-
-<p>提示: 如果出现安装被拒绝,可以在每个命令前加上sudo.例如</p>
-
-<blockquote><p>sudo brew update</p></blockquote>
-
-<p> <img src="http://upload-images.jianshu.io/upload_images/1523795-a36418146f4bdd95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="安装过程最关键" /></p>
-
-<p>此时,只需按照提示进行操作,在 <code>~/.lldbinit</code>文件中加入Caveats中的提示,写入的一行命令.</p>
-
-<blockquote><p>命令行键入(粗体部分换成Caveats中的提示的一行命令): echo  <strong><em>command script import /usr/local/Cellar/chisel/1.0.0/libexec/fblldb.py</em></strong> >> ~/.lldbinit</p></blockquote>
-
-<h4>查看安装状态</h4>
-
-<p>1.命令行安装查看</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 1. 在命令行窗口输入lldb
-</span><span class='line'>shang:ios-mf-new shanggaolin$ lldb
-</span><span class='line'>(lldb) command source -s 1 '/Users/shanggaolin/Desktop/missfresh/ios-mf-new/./.lldbinit'
-</span><span class='line'>// 2.在命令行窗口输入help
-</span><span class='line'>(lldb) help
-</span><span class='line'>// 3. 向下翻滚可以看如下命令,说明chisel命令行安装成功
-</span><span class='line'>....
-</span><span class='line'>Current user-defined commands:
-</span><span class='line'>
-</span><span class='line'>  alamborder   -- For more information run 'help alamborder'
-</span><span class='line'>  alamunborder -- For more information run 'help alamunborder'
-</span><span class='line'>  binside      -- For more information run 'help binside'
-</span><span class='line'>  bmessage     -- For more information run 'help bmessage'
-</span><span class='line'>  border       -- For more information run 'help border'
-</span><span class='line'>  caflush      -- For more information run 'help caflush'
-</span><span class='line'>  dcomponents  -- For more information run 'help dcomponents'
-</span><span class='line'>  eobjc        -- For more information run 'help eobjc'
-</span><span class='line'>  eswift       -- For more information run 'help eswift'
-</span><span class='line'>  fa11y        -- For more information run 'help fa11y'
-</span><span class='line'>  flicker      -- For more information run 'help flicker'</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.Xcode安装查看</p>
-
-<p> 在Xocde控制台断点状态下输入help,向下翻滚同样可以看到想上面那些命令.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-fd602619d08f9160.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="控制台截图" />
-  现在,已经安装成功了,可以享受Chisel带来的方便了.</p>
-
-<p>*温馨提示:如果你的mac同时安装有不同版本的Xcode,可能会出现在控制台可以输入chisel命令,但是不会出现响应结果.遇到这种情况,换一下Xcode就ok.</p>
-
-<h3>Chisel常用命令</h3>
-
-<p>这里暂时先介绍一些命令作用,以便读者对Chisel有个初步体会.具体操作会在下一篇随笔中具体讲述.</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:center;"> 命令       </th>
-<th style="text-align:center;"> 作用  </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center;"> pviews     </td>
-<td style="text-align:center;"> 递归打印view的描述(详细到常见属性,如 frame = (0 0; 126 126); userInteractionEnabled = NO; layer  = &hellip;) ,显示层级关系</td>
-</tr>
-<tr>
-<td style="text-align:center;"> pvc      </td>
-<td style="text-align:center;">  递归打印Viewcontroller的描述</td>
-</tr>
-<tr>
-<td style="text-align:center;"> visualize </td>
-<td style="text-align:center;"> 可以直接通过mac上Preview.app查看UIImage, CGImageRef, UIView, CALayer, NSData (of an image), UIColor, CIColor, or CGColorRef 等 </td>
-</tr>
-<tr>
-<td style="text-align:center;">fv</td>
-<td style="text-align:center;">搜索内存中的View,可以正则匹配类名</td>
-</tr>
-<tr>
-<td style="text-align:center;">fvc</td>
-<td style="text-align:center;">搜索内存中的ViewController,可以正则匹配类名</td>
-</tr>
-<tr>
-<td style="text-align:center;">show/hide</td>
-<td style="text-align:center;">显示或隐藏一个指定的View,便于观察其后视图</td>
-</tr>
-<tr>
-<td style="text-align:center;">caflush</td>
-<td style="text-align:center;">重新渲染界面</td>
-</tr>
-<tr>
-<td style="text-align:center;">border/unborder</td>
-<td style="text-align:center;">显示视图边界,在视图层次中方便观察</td>
-</tr>
-<tr>
-<td style="text-align:center;">bmessage</td>
-<td style="text-align:center;"> 为从父类继承本类未实现的方法打断点</td>
-</tr>
-<tr>
-<td style="text-align:center;">presponder</td>
-<td style="text-align:center;"> 打印自本视图起的响应链</td>
-</tr>
-<tr>
-<td style="text-align:center;">mask/unmask</td>
-<td style="text-align:center;">在View上添加或隐藏一个透明遮盖层</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/">iOS | 小心NSTimer中的循环引用</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-06-11T20:35:12+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:35 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>NSTimer大家都很熟悉,觉得用起来也很简单.然而,由NSTimer引起的循环引用,不经历过一次,一般很难查.
-下面看一段代码:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewDidLoad {
-</span><span class='line'>[super viewDidLoad];
-</span><span class='line'>
-</span><span class='line'>_timer = [NSTimer scheduledTimerWithTimeInterval:0.1
-</span><span class='line'>target:self
-</span><span class='line'>selector:@selector(p_doSomeThing)
-</span><span class='line'>userInfo:nil
-</span><span class='line'>repeats:YES];
-</span><span class='line'>
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>- (void)p_doSomeThing {
-</span><span class='line'>// doSomeThing
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>- (void)p_stopDoSomeThing {
-</span><span class='line'>[self.timer invalidate];
-</span><span class='line'>self.timer = nil;
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>- (void)dealloc {
-</span><span class='line'>[self.timer invalidate];
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的代码主要是利用定时器重复执行p_doSomeThing方法,在合适的时候调用p_stopDoSomeThing方法使定时器失效.</p>
-
-<p>能看出问题吗?在开始讨论上面代码问题之前,需要对NSTimer做一点说明.NSTimer的</p>
-
-<p>&lsquo;scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:&rsquo;</p>
-
-<p>方法的最后一个参数为YES时,NSTimer会保留目标对象,等到自身失效才释放.执行完任务后,一次性的定时器会自动失效;重复性的定时器,需要主动调用<code>invalidate</code>方法才会失效.</p>
-
-<p>了解<code>scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:</code>最后一个参数含义之后,你发现何处出现了循环引用?</p>
-
-<p>创建定时器时,<code>当前控制器</code>(创建定时器的那个控制器,为了描述方便,简称当前控制器)引用而定时器了(为什么因引用定时器?后续要用到这个定时器对象),在给定时器添加任务时,定时器保留了<code>self</code>(当前控制器).这里就出现了循环引用.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-92fd39ba101e00d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="循环引用" /></p>
-
-<p>如果能在合适的时候打破循环引用,就不会有问题了.此时有两种选择:</p>
-
-<blockquote><p>1.控制器不再引用定时器<br/>
-2.定时器不再保留当前控制器</p></blockquote>
-
-<p>第一种是不可行的,那么就只有第二种方法了.也就是合适的时候调用<code>p_stopDoSomeThing</code>方法.然而,合适的时机很难找到.假如这是一个验证码倒计时程序,你可以在倒计时结束时调用<code>p_stopDoSomeThing</code>方法.但是你不能确定用户一定会等倒计时结束才返回到上一级页面.或许你想在<code>dealloc</code>方法中使定时器失效,那你就太天真了.此时定时器还保留着当前控制器,此方法是不可能调用的,因此会出现内存泄漏.或许在倒计时程序中,你可以重写返回方法,先调用<code>p_stopDoSomeThing</code>再返回,但这不是一个好主意.</p>
-
-<p>该问题出现的根本原因就是无法确保一定会调用<code>p_stopDoSomeThing</code>方法.针对这一问题,有些人会选择自己实现一个不保留目标对象的定时器.这里,并不打算采用那种从头写起的方法,正如AFN作者所说的</p>
-
-<blockquote><p>无数开发者尝试自己做一个简陋而脆弱的系统来实现网络缓存的功能，殊不知 NSURLCache 只要两行代码就能搞定且好上 100 倍。</p></blockquote>
-
-<p>这里采用block块的方法为NSTimer增加一个分类,具体细节看代码(程序员最好的语言是代码).</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//.h文件
-</span><span class='line'>#import &lt;Foundation/Foundation.h&gt;
-</span><span class='line'>
-</span><span class='line'>@interface NSTimer (SGLUnRetain)
-</span><span class='line'>+ (NSTimer *)sgl_scheduledTimerWithTimeInterval:(NSTimeInterval)inerval
-</span><span class='line'>repeats:(BOOL)repeats
-</span><span class='line'>block:(void(^)(NSTimer *timer))block;
-</span><span class='line'>@end
-</span><span class='line'>
-</span><span class='line'>//.m文件
-</span><span class='line'>#import "NSTimer+SGLUnRetain.h"
-</span><span class='line'>
-</span><span class='line'>@implementation NSTimer (SGLUnRetain)
-</span><span class='line'>
-</span><span class='line'>+ (NSTimer *)sgl_scheduledTimerWithTimeInterval:(NSTimeInterval)inerval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block{
-</span><span class='line'>
-</span><span class='line'>return [NSTimer scheduledTimerWithTimeInterval:inerval target:self selector:@selector(sgl_blcokInvoke:) userInfo:[block copy] repeats:repeats];
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>+ (void)sgl_blcokInvoke:(NSTimer *)timer {
-</span><span class='line'>
-</span><span class='line'>void (^block)(NSTimer *timer) = timer.userInfo;
-</span><span class='line'>
-</span><span class='line'>if (block) {
-</span><span class='line'>block(timer);
-</span><span class='line'>}
-</span><span class='line'>}
-</span><span class='line'>@end
-</span><span class='line'>
-</span><span class='line'>//控制器.m
-</span><span class='line'>
-</span><span class='line'>#import "ViewController.h"
-</span><span class='line'>#import "NSTimer+SGLUnRetain.h"
-</span><span class='line'>
-</span><span class='line'>//定义了一个__weak的self_weak_变量
-</span><span class='line'>#define weakifySelf  \
-</span><span class='line'>__weak __typeof(&*self)weakSelf = self;
-</span><span class='line'>
-</span><span class='line'>//局域定义了一个__strong的self指针指向self_weak
-</span><span class='line'>#define strongifySelf \
-</span><span class='line'>__strong __typeof(&*weakSelf)self = weakSelf;
-</span><span class='line'>
-</span><span class='line'>@interface ViewController ()
-</span><span class='line'>
-</span><span class='line'>@property(nonatomic, strong) NSTimer *timer;
-</span><span class='line'>
-</span><span class='line'>@end
-</span><span class='line'>
-</span><span class='line'>@implementation ViewController
-</span><span class='line'>- (void)viewDidLoad {
-</span><span class='line'>[super viewDidLoad];
-</span><span class='line'>
-</span><span class='line'>__block NSInteger i = 0;
-</span><span class='line'>weakifySelf
-</span><span class='line'>self.timer = [NSTimer sgl_scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer *timer) {
-</span><span class='line'>strongifySelf
-</span><span class='line'>[self p_doSomething];
-</span><span class='line'>NSLog(@"----------------");
-</span><span class='line'>if (i++ &gt; 10) {
-</span><span class='line'>[timer invalidate];
-</span><span class='line'>}
-</span><span class='line'>}];
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>- (void)p_doSomething {
-</span><span class='line'>
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p> 在使用中,最需要注意的就是下面这段代码:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>weakifySelf
-</span><span class='line'>self.timer = [NSTimer sgl_scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer *timer) {
-</span><span class='line'>strongifySelf
-</span><span class='line'>[self p_doSomething];
-</span><span class='line'>NSLog(@"----------------");
-</span><span class='line'>if (i++ &gt; 10) {
-</span><span class='line'>[timer invalidate];
-</span><span class='line'>}
-</span><span class='line'>}];</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>weakifySelf</code>宏定义了一个弱引用的<code>weakSelf</code>,<code>strongifySelf</code>宏又根据<code>weakSelf</code>定义了一个强引用的self.这样在block内使用self和其他地方一样.这里的<code>self</code>和block外的<code>self </code>指向一样,但是不同的变量.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/">iOS | LLDB调试基础篇(一)</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-04-11T17:03:04+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:03 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>LLDB简介</h3>
-
-<blockquote><p>LLDB是一个调试器,在此之前,Xcode使用的是GDB调试器和GCC编译器,后来因为GCC官方对苹果的需求回应的不及时(据说),苹果选择投资LLVM,LLDB就取代了GDB.</p></blockquote>
-
-<h3>使用</h3>
-
-<p> LLDB功能比较强大,介绍太多会打击很多初学者的自信心.这里,只会介绍一些比较常用的使用方法和命令.
-下面的操作,都是基于debug状态的.在调试时,根据断点才能确定你要操作的上下文(上下文你可以暂时理解为范围,比如你在Word中更改文字颜色,这个操作也是有上下文的,只会对该上下文内的文字有效.这种理解并不十分准确,接触多了自己就能体会到具体含义了).</p>
-
-<h4>po/p命令</h4>
-
-<p>po命令可以打印断点所处上下文内的对象,以此来观察对象状态.或许你会想,将鼠标悬浮在变量上方也可以查看对象信息.Xcode没有那么给力,有时候这种方式很难看到该信息.即便可以,也没有po命令来的方便.通过po命令,你可以查看更多信息.比如断点附近没有self,你就无法查看self的信息;如果想查看本地偏好设置,你只需随便在某处打个断点,像<code>po [[NSUserDefaults standardUserDefaults] valueForKey:@"name"]</code>这样就OK了.</p>
-
-<p> p命令和po命令一样,前者是针对基本类型的,后者是针对对象类型的.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-7de78ab09b57d9c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="po命令示例" /></p>
-
-<p>当像下面这样,用p打印对象时,会输出对象的地址和描述.如果想打印对象的description方法返回的信息,需要使用po命令.</p>
-
-<blockquote><p>(lldb) p @[ @&ldquo;foo&rdquo;, @&ldquo;foo&rdquo; ]
-//这里$1是引用数组的变量
-(NSArray *) $1 = 0x00007fdb9b71b3e0 @&ldquo;2 objects&rdquo;</p>
-
-<hr />
-
-<p>//以对象形式打印变量
-(lldb) e -O &ndash; $1
- <__NSArrayI 0x7fdb9b71b3e0>(
-foo,
-foo
-)</p></blockquote>
-
-<p>为了便于记忆,顺便提一下,po是print object的缩写,也就是<code>e -O --</code>的简写.</p>
-
-<h4>expr命令</h4>
-
-<p> 该命令可以在在调试时执行表达式,动态改变变量的值,更方便测试边界值.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-37cbebfb12fd9e12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="expr命令" /></p>
-
-<p>调试时,在17行设置了断点,在程序被断点断着时,输入了<code>expr a = 2</code>,放开断点继续运行,看到控制台输出<code>a + b = 4</code>.</p>
-
-<p>下面看看怎么在调试时定义变量辅助调试.定义辅助变量和普通定义方法的唯一区别就是在变量名前添加了$符号.</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-36d797a0b4b30966.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="expr命令" /></p>
-
-<p>通过该命令,调试时就不用每次修改变量值重新运行.是不是很方便?</p>
-
-<p> 这里,顺便提一下,po命令也可以代替expr,只不过语义上不如expr规范.expr是express的缩写.</p>
-
-<blockquote><p>大道至简.这些命令很简单,充分发挥其作用,可以给调试带来很多方便.这些只是LLDB的九牛一毛,如果读者感兴趣,可以继续关注.</p></blockquote>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/posts/2">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1452,7 +757,15 @@ foo
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+        <a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a>
       </li>
     
       <li class="post">
@@ -1461,14 +774,6 @@ foo
     
       <li class="post">
         <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
       </li>
     
   </ul>
@@ -1507,6 +812,19 @@ foo
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'mrshang110';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 

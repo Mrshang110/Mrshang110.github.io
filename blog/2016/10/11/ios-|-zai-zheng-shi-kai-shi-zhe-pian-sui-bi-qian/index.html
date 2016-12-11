@@ -1,0 +1,330 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | 开发中你可能没有留意的那些事 - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | 开发中你可能没有留意的那些事</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-10-11T17:33:45+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:33 pm</span></time>
+        
+        
+ | <a href="#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
+
+<p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
+
+<p>其实广告也算的上一条你没留意的那些事,姑且算作第0条吧,至此,广告结束.</p>
+
+<h4>动态语言与静态语言</h4>
+
+<p>写了几年的Object-C代码,但问起Object-C之父是谁,你真的可能不知道.Object-C是美国人布•确斯(Brad Cox)于1980年年初发明的动态语言.与其同时代的C++一样,都是在C语言基础加上了面向对象的特性扩充而成的.虽然两者都是基于C语言扩充的,但它们实现机制差异很大.前者是动态语言,后者是静态语言.</p>
+
+<p>在想理解动态与静态语言之间的区别时,请你思考一个问题:如何写一个编译器?你在开什么玩笑,写编译器?</p>
+
+<p>这里只是让你思考一下,就是你真写出一个编译器,也很难超越现有的(我不是看不起你,因为能写编译器的哪有时间来看我的随笔).</p>
+
+<p>1.如果写一个C语言编译器,主要需要按照语法规则实现一个LALR语法分析器,把函数名转化为一个相对内存地址,函数调用转化为跳转指令.</p>
+
+<p>2.如果加上对象呢?无非就是在让编译器绕个弯子,把函数限制在类里,调用时先找到对象,然后在调用函数.</p>
+
+<p>3.如果加上动态特性,就不得不把类的实现部分抽象出来,实现一套运行时系统.动态语言编译器甚至保留部分代码里的sytax名称,名称错误检查,运行时系统环境注册的所有全局的类/函数/变量等信息,可以不断为这个层增加必要的信息.函数调用时,先从这个运行时系统环境里检测所有可能的参数再做跳转.</p>
+
+<p>动态语言的好处由上面的介绍,可想而知: 调用一个函数时,跳转到一个非法地址,动态语言的编译器和运行时会帮助开发者过滤掉这些问题.这是静态语言很难实现的.运行时使得程序更加灵活,关于运行时的使用,网上资料太多了,请读者自行查阅.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 此处仅是过滤非法地址的简单一例
+</span><span class='line'>if ([self.delegate respondsToSelector:@selector(action)])</span></code></pre></td></tr></table></div></figure>
+
+
+<p>动态语言也有缺点,和静态语言相比,由于其一个分CPU计算耗在了运行时中,效率会低一些.灵活是有代价的,从现在的硬件来看,牺牲点效率是值得的.在上面也介绍了,动态语言由于运行时系统的需要,会保留一些源码级别的程序结构,这给破解带来了方便之门.</p>
+
+<h4>加快编译速度的Module</h4>
+
+<p>关于这个本想自己写一下,发现网上已经有一篇写的还可以,感兴趣的可以阅读下.<a href="http://blog.csdn.net/leemin_ios/article/details/51208642">关于Objective-C，Modules和Autolinking</a>.</p>
+
+<h4>提高运行速度的标记指针</h4>
+
+<p>iPhone 5s时开始使用arm64架构,在这个64位化过程中,一个关键的改进就是引入了标记(tagged)指针.</p>
+
+<p>在32位和64位架构中,指针对齐边界也不一样.例如在32位中,读取内存地址为0x00000001-0x00000005的整数需要两个CPU周期,而0x00000004-0x00000008只有一个CPU周期.这是因为32位架构对齐方式以16字节为边界,也即内存地址最后4位永远为零(标记指针除外).</p>
+
+<p>到了64位架构后,内存地址可达2<sup>64</sup>(千万T字节),这些空间有很多是浪费的,于是,就引入了标记指针来充分利用这些地址空间.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> NSNumber *num1 = [NSNumber numberWithInteger:1];
+</span><span class='line'> NSNumber *num2 = [NSNumber numberWithInteger:2];
+</span><span class='line'>    
+</span><span class='line'> NSLog(@"%p - %p", num1, num2);
+</span><span class='line'> //输出:0xb000000000000013 - 0xb000000000000023
+</span><span class='line'>
+</span><span class='line'> NSNumber *num3 = [NSNumber  numberWithInteger:0x1111111111111111];
+</span><span class='line'> NSLog(@"%p", num3);
+</span><span class='line'> //输出:0x608000222b00</span></code></pre></td></tr></table></div></figure>
+
+
+<p>引入标记指针后,在数据不超过60位时,可以利用指针地址的中间60位保存数据,而不必在堆上开辟空间.上面代码中,我们可以看到从倒数第2位开始的60位中,存放的就是数据的值.如果数据太大60位存储不下,就会和过去一样创建对象.</p>
+
+<p>标记指针省去了对象创建/销毁等操作,对运行速度提升很明显.标记指针不止可以用在NSNumber上,字符串等也在用.感兴趣可以阅读<a href="http://www.cocoachina.com/ios/20150918/13449.html">采用Tagged Pointer的字符串</a>了解一下.</p>
+
+<p><strong><em>温馨提示</em></strong> 如果你次创建的NSNumber对象的数值一样,虽然是不同对象,但地址相同,这是苹果对-1到12之间的对象做了缓存.苹果对性能优化这么认真的精神值得每个人学习.</p>
+
+<p>这次先写到这里,下篇随笔继续<code>开发中你可能没有留意的那些事</code>.</p>
+
+<p>参考:
+Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-10-11T17:33:45+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:33 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/" title="Previous Post: iOS | 不同场景下的定时方法">&laquo; iOS | 不同场景下的定时方法</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/" title="Next Post: iOS | XCode8新增可视化循环引用调试工具">iOS | XCode8新增可视化循环引用调试工具 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+    
+  <section>
+    <h1>Comments</h1>
+    <div id="comments" aria-live="polite">
+<div class="ds-thread" data-title="iOS | 开发中你可能没有留意的那些事"></div>
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"mrshang110"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+<!-- Duoshuo Comment END -->
+</div>
+  </section>
+
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mrshang110';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/';
+        var disqus_url = 'http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

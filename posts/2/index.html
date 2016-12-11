@@ -1,582 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Mrshang110]]></title>
-  <link href="http://mrshang110.github.io/atom.xml" rel="self"/>
-  <link href="http://mrshang110.github.io/"/>
-  <updated>2016-12-11T19:07:33+08:00</updated>
-  <id>http://mrshang110.github.io/</id>
-  <author>
-    <name><![CDATA[尚高林]]></name>
-    <email><![CDATA[mailto:18317713187@163.com]]></email>
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Mrshang110</title>
+  <meta name="author" content="尚高林">
 
   
-  <entry>
-    <title type="html"><![CDATA[iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚]]></title>
-    <link href="http://mrshang110.github.io/blog/2016/11/21/ios-%7C-bool/"/>
-    <updated>2016-11-21T20:39:12+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2016/11/21/ios-|-bool</id>
-    <content type="html"><![CDATA[<p>每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境.</p>
-
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1523795-cca8c9ed5d930d18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="傻傻分不清楚" /></p>
-
-<ul>
-<li>bool 这个类型,是c语言&lt;stdbool.h>的类型,这个类型接收值后,非0即1.即便给a=1000000000000000000000000000000000000000000000000000000000000000000000.0也不会有任何警告,bool只会判断这个这个值是否为0.这里需要注意浮点数误差.</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>bool Defined in stdbool.h, ISO C/C++ standard type
-</span><span class='line'>false Now defined in stdbool.h
-</span><span class='line'>true Now defined in stdbool.h    </span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>boolean_t根据系统架构等定义不同,本质上是 unsigned int 或者 int,iPhone5s后开始逐渐采用arm64架构.</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#if defined(__x86_64__) && !defined(KERNEL)
-</span><span class='line'>typedef unsigned int boolean_t;
-</span><span class='line'>#else
-</span><span class='line'>typedef int boolean_t;
-</span><span class='line'>#endif</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>Boolean本质上就是unsigned char</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Boolean types and values
-</span><span class='line'>Boolean Mac OS historic type, sizeof(Boolean)==1
-</span><span class='line'>typedef unsigned char Boolean;</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>BOOL在64位的iPhone或者watch,就是bool类型.</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>/// Type to represent a boolean value.
-</span><span class='line'>#if (TARGET_OS_IPHONE && __LP64__)  ||  TARGET_OS_WATCH
-</span><span class='line'>typedef bool BOOL;
-</span><span class='line'>#else
-</span><span class='line'>typedef signed char BOOL; </span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>温馨提示</strong>:不要把数组大小,逻辑位运算符等操作结果直接赋给BOOl.如BOOL haveItems = array.count;这在旧的设备上可能有因为仅截取最后一位发生逻辑错误.</p>
-]]></content>
-  </entry>
+  <meta name="description" content="随着手机屏幕的变大,原来右滑返回略显不够人性化,尤其是对手小的朋友,让我如何单手玩手机.对于app要全屏右滑或保持原生边缘触发,各有说辞,这里不讨论其好坏. 下面先看一下实现效果. 效果还不错吧.当然了,这里的所有效果都是系统实现的.或许你不信,一起看看实现吧. 1
+2
+3
+4
+5
+6
+7
+8
+9 &hellip;">
   
-  <entry>
-    <title type="html"><![CDATA[iOS | XCode8新增可视化循环引用调试工具]]></title>
-    <link href="http://mrshang110.github.io/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/"/>
-    <updated>2016-10-28T17:47:19+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2016/10/28/ios-|-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju</id>
-    <content type="html"><![CDATA[<p>英文地址:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips">Memory Graph Debugger Tips</a></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>译者的话:
-</span><span class='line'>目前关于Debug Memory Graph的中文资料很少,
-</span><span class='line'>甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
-</span><span class='line'>来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片).
-</span><span class='line'>交流中很少翻译成中文或者没有统一中文翻译的词,依然使用英文原词.</span></code></pre></td></tr></table></div></figure>
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  
+  <link rel="canonical" href="http://mrshang110.github.io/posts/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
 
-<h3>Memory Graph Debugger 使用方法</h3>
+  <!-- -->
+  
 
-<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.
--  点击调试栏中的Sleestak-fingers按钮启动. 它处在Cyberman(查看视图层次工具)按钮和paper airplane(模拟器定位)按钮之间.换言之,它是Xcode的工具,不包含在Instruments里.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-d28052ff505d50a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Sleestak-fingers button" /></p>
+</head>
 
-<p><img src="http://upload-images.jianshu.io/upload_images/1523795-57d6616bc0f3969b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="调试工具栏" /></p>
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
 
-<ul>
-<li><p>关闭僵(zombies)尸对象.开启scheme检查僵尸对象功能会干扰此功能(提示:一般情况下关闭僵尸对象功能,除非你必须使用).</p></li>
-<li><p>开启Malloc Stack Logging(我觉得开启它以展示栈回溯(backtraces)是个正确选择).
-<img src="http://upload-images.jianshu.io/upload_images/1523795-59a3a2b9aa09ef7f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="zombies and Malloc Stack Logging" /></p></li>
-<li><p>在Xcode中显示右边栏,点击内存对象图中的对象查看它的类,层次和栈回溯.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-20236dc8943da8b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="右边栏" /></p></li>
-<li><p>对象之间会有一根带有标签的线,这根线代表对象的引用关系.点击线,在右边栏可以看到引用类型(weak, strong or unknown)和引用关系(source and destination).
-<img src="http://upload-images.jianshu.io/upload_images/1523795-137cd3b9e3ba6be9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Snip20161017_1.png" /></p></li>
-<li><p>单击对象右上角中心带有双向箭头的圆环,展开对象树.点击相同地方复原.点击左边栏对象可以聚焦对应对象上.</p></li>
-<li><p>在左边栏寻找紫色的感叹号,这些地方可能有问题.然而,大部分问题检测不到,需要你仔细检查(译者注:不要因为这就对Memory Graph Debugger失望,借助它,你可以自己发现这些问题).</p></li>
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
 </ul>
 
-
-<p> 我已经使用它解决了两个bug,都节约了很多时间.很有必要提醒你你可能碰到的问题.</p>
-
-<h3>Notification block</h3>
-
-<p>我个人不会用block设置一个NSNotification观察者,在 init 和 viewDidLoad里添加没有关联的代码,会使代码变得杂乱并且很危险.</p>
-
-<p>除非你很细心,否则它很危险.它可能捕获一个引用自己的强引用,造成对象释放不掉.我不喜欢像这需要做一些额外处理的APIs.</p>
-
-<p>很确定,这只是其中一例.</p>
-
-<p>在memory graph debugger工具中,capture标签告诉我们哪里捕获了block,通过它,你可以很快找到它.</p>
-
-<p>(参阅:来自2015年的:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips"> How Not to Crash #3: NSNotification.</a>)</p>
-
-<h3>View controller / view retain cycle</h3>
-
-<p>编程的一般原则是对象应该知道其他们的children,但不应该知道它们的parents(<em>译者注:此处的对象指View controller or view retain cycle</em>).</p>
-
-<p>然而,有些时候视图需要知道其所在的控制器.这不是常常需要,但一些时候是不得已的办法.</p>
-
-<p>编程规则也指出child需要知道parent,依然不能强引用parent.</p>
-
-<p>确实一个保留引用问题的就发生了:一个视图保留了它所在的视图控制器.这个例子解决办法就是改用弱引用.</p>
-
-<p>再一次,memory graph debugger工具使我准确地发现了这个bug.现在,我可以看到app里发生了什么,这是以前不可能的事.</p>
-
-<blockquote><p>如果您有什么问题,欢迎一起探讨.转载请注明出处.</p></blockquote>
-]]></content>
-  </entry>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
   
-  <entry>
-    <title type="html"><![CDATA[iOS | 开发中你可能没有留意的那些事]]></title>
-    <link href="http://mrshang110.github.io/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/"/>
-    <updated>2016-10-11T17:33:45+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2016/10/11/ios-|-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian</id>
-    <content type="html"><![CDATA[<p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
-
-<p>针对NSTimer引起的循环引用的解决网上有很多,就我之前查到的资料,几乎都是重写一个定时器.我觉得这种做法很不好,就采用了分类为NSTimer增加了一个block方法,很简单地就把问题解决了,也充分利用了苹果为我们封装好的NSTimer.前些天项目中要用到定时器,突然发现iOS10已经新增了一个block方法,和我7月份随笔中的方法一样,甚是高兴,不过现在项目还得兼容10以下版本,我的解决办法在很长一段时间,直到不用兼容iOS9前,都有很大意义.</p>
-
-<p>其实广告也算的上一条你没留意的那些事,姑且算作第0条吧,至此,广告结束.</p>
-
-<h4>动态语言与静态语言</h4>
-
-<p>写了几年的Object-C代码,但问起Object-C之父是谁,你真的可能不知道.Object-C是美国人布•确斯(Brad Cox)于1980年年初发明的动态语言.与其同时代的C++一样,都是在C语言基础加上了面向对象的特性扩充而成的.虽然两者都是基于C语言扩充的,但它们实现机制差异很大.前者是动态语言,后者是静态语言.</p>
-
-<p>在想理解动态与静态语言之间的区别时,请你思考一个问题:如何写一个编译器?你在开什么玩笑,写编译器?</p>
-
-<p>这里只是让你思考一下,就是你真写出一个编译器,也很难超越现有的(我不是看不起你,因为能写编译器的哪有时间来看我的随笔).</p>
-
-<p>1.如果写一个C语言编译器,主要需要按照语法规则实现一个LALR语法分析器,把函数名转化为一个相对内存地址,函数调用转化为跳转指令.</p>
-
-<p>2.如果加上对象呢?无非就是在让编译器绕个弯子,把函数限制在类里,调用时先找到对象,然后在调用函数.</p>
-
-<p>3.如果加上动态特性,就不得不把类的实现部分抽象出来,实现一套运行时系统.动态语言编译器甚至保留部分代码里的sytax名称,名称错误检查,运行时系统环境注册的所有全局的类/函数/变量等信息,可以不断为这个层增加必要的信息.函数调用时,先从这个运行时系统环境里检测所有可能的参数再做跳转.</p>
-
-<p>动态语言的好处由上面的介绍,可想而知: 调用一个函数时,跳转到一个非法地址,动态语言的编译器和运行时会帮助开发者过滤掉这些问题.这是静态语言很难实现的.运行时使得程序更加灵活,关于运行时的使用,网上资料太多了,请读者自行查阅.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 此处仅是过滤非法地址的简单一例
-</span><span class='line'>if ([self.delegate respondsToSelector:@selector(action)])</span></code></pre></td></tr></table></div></figure>
-
-
-<p>动态语言也有缺点,和静态语言相比,由于其一个分CPU计算耗在了运行时中,效率会低一些.灵活是有代价的,从现在的硬件来看,牺牲点效率是值得的.在上面也介绍了,动态语言由于运行时系统的需要,会保留一些源码级别的程序结构,这给破解带来了方便之门.</p>
-
-<h4>加快编译速度的Module</h4>
-
-<p>关于这个本想自己写一下,发现网上已经有一篇写的还可以,感兴趣的可以阅读下.<a href="http://blog.csdn.net/leemin_ios/article/details/51208642">关于Objective-C，Modules和Autolinking</a>.</p>
-
-<h4>提高运行速度的标记指针</h4>
-
-<p>iPhone 5s时开始使用arm64架构,在这个64位化过程中,一个关键的改进就是引入了标记(tagged)指针.</p>
-
-<p>在32位和64位架构中,指针对齐边界也不一样.例如在32位中,读取内存地址为0x00000001-0x00000005的整数需要两个CPU周期,而0x00000004-0x00000008只有一个CPU周期.这是因为32位架构对齐方式以16字节为边界,也即内存地址最后4位永远为零(标记指针除外).</p>
-
-<p>到了64位架构后,内存地址可达2<sup>64</sup>(千万T字节),这些空间有很多是浪费的,于是,就引入了标记指针来充分利用这些地址空间.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> NSNumber *num1 = [NSNumber numberWithInteger:1];
-</span><span class='line'> NSNumber *num2 = [NSNumber numberWithInteger:2];
-</span><span class='line'>    
-</span><span class='line'> NSLog(@"%p - %p", num1, num2);
-</span><span class='line'> //输出:0xb000000000000013 - 0xb000000000000023
-</span><span class='line'>
-</span><span class='line'> NSNumber *num3 = [NSNumber  numberWithInteger:0x1111111111111111];
-</span><span class='line'> NSLog(@"%p", num3);
-</span><span class='line'> //输出:0x608000222b00</span></code></pre></td></tr></table></div></figure>
-
-
-<p>引入标记指针后,在数据不超过60位时,可以利用指针地址的中间60位保存数据,而不必在堆上开辟空间.上面代码中,我们可以看到从倒数第2位开始的60位中,存放的就是数据的值.如果数据太大60位存储不下,就会和过去一样创建对象.</p>
-
-<p>标记指针省去了对象创建/销毁等操作,对运行速度提升很明显.标记指针不止可以用在NSNumber上,字符串等也在用.感兴趣可以阅读<a href="http://www.cocoachina.com/ios/20150918/13449.html">采用Tagged Pointer的字符串</a>了解一下.</p>
-
-<p><strong><em>温馨提示</em></strong> 如果你次创建的NSNumber对象的数值一样,虽然是不同对象,但地址相同,这是苹果对-1到12之间的对象做了缓存.苹果对性能优化这么认真的精神值得每个人学习.</p>
-
-<p>这次先写到这里,下篇随笔继续<code>开发中你可能没有留意的那些事</code>.</p>
-
-<p>参考:
-Writing Solid Object-C Code 61 Suggestions To Improve Your Program</p>
-]]></content>
-  </entry>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | 不同场景下的定时方法]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/"/>
-    <updated>2015-11-12T19:50:49+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/11/12/ios-|-bu-tong-chang-jing-xia-de-ding-shi-fang-fa</id>
-    <content type="html"><![CDATA[<p>在之前的开发随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>中介绍了NSTimer会因持有目标对象而引起内存泄漏(循环引用)以及解决办法.这篇随笔主要介绍iOS开发中其他几种实现定时任务的方式及其优缺点.</p>
-
-<p><strong><em>再谈NSTimer</em></strong>
-要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述,后续随笔会介绍).Runloop简单地说就是一个接收处理异步消息事件的循环,该循环中等待事件发生，然后将这个事件送到能处理它的地方。</p>
-
-<p>或许你还不是很明白,没有关系,有个初步概念就不影响你理解NSTimer了.</p>
-
-<p>NSTimer注册到Runloop中后,Runloop会周期性地触发注册的事件.但是这里的周期并不十分精确.Timer的属性Tolerance(容差)告诉系统可以允许的时间误差.一旦有大型的任务,错过这个周期需要执行的时间点±Tolerance,任务不会延后执行而是跳跃过去,下个周期继续.</p>
-
-<p><strong><em>NSObject的定时方法</em></strong>
-这里不会介绍NSObject的所有方法,主要是介绍其应该注意的地方.在介绍之前补充一句:主线程会自动创建Runloop,子线程不会创建.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- performSelector:withObject:afterDelay:</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果该方法在主线程,可以正常执行,在子线程就会失效.这一系列方法有很多,如果读者感兴趣,可以阅读相关技术博客.这些方法的使用不是这篇随笔介绍的重点,因为这样博客有很多,再此重复意义不大.</p>
-
-<p><strong><em>CADisplayLink</em></strong></p>
-
-<blockquote><p>A CADisplayLink object is a timer object that allows your application to synchronize its drawing to the refresh rate of the display.
-Your application creates a new display link, providing a target object and a selector to be called when the screen is updated.</p></blockquote>
-
-<p>上面摘自苹果官方文档,CADisplayLink是一个定时器,使用它可以以和
-屏幕刷新频率相同的频率将内容绘到屏幕上.创建一个该类对象,设置好target和selector,在屏幕更新时就会调用该selector.</p>
-
-<p>其使用方法和NSTimer类似,这里不再赘述.下面介绍一个使用场合,如果读者需要用到,可以自行查阅相关资料,查阅资料无法解决时,也可以在评论一起探讨.</p>
-
-<p>CADisplayLink默认使用屏幕固有的刷新频率,精确度比较高,使用场景也较为单一.一般用在需要不断重绘界面时,比如UI动画底层实现.在实际应用中,没有NSTimer使用的多.</p>
-
-<p>如果对CADisplayLink感兴趣,可以<a href="https://github.com/zipme/RQShineLabel">点击</a>阅读一个使用CADisplayLink开源库的源码.</p>
-
-<p><img src="https://raw.githubusercontent.com/zipme/RQShineLabel/master/Screenshots/rqshinelabel.gif" alt="类似Secret文字渐变效果的开源库" /></p>
-
-<p><strong><em>GCD定时</em></strong>
-Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoop和mode，比NSTimer更加准时,性能更好.</p>
-
-<p>使用GCD实现定时功能也很简单.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#import "ViewController.h"
-</span><span class='line'>
-</span><span class='line'>@interface ViewController () {
-</span><span class='line'>    dispatch_source_t _timer;
-</span><span class='line'>}
-</span><span class='line'>@end
-</span><span class='line'>
-</span><span class='line'>@implementation ViewController
-</span><span class='line'>
-</span><span class='line'>- (void)viewDidLoad {
-</span><span class='line'>    [super viewDidLoad];
-</span><span class='line'>    // 获得一个queue
-</span><span class='line'>    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-</span><span class='line'>    // ①创建定时器
-</span><span class='line'>    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-</span><span class='line'>    /**函数原型
-</span><span class='line'>      dispatch_source_create(dispatch_source_type_t type,
-</span><span class='line'>    uintptr_t handle,
-</span><span class='line'>    unsigned long mask,
-</span><span class='line'>    dispatch_queue_t queue);
-</span><span class='line'>     *@param start
-</span><span class='line'>     * 开始时间
-</span><span class='line'>     *
-</span><span class='line'>     * @param interval
-</span><span class='line'>     *时间间隔
-</span><span class='line'>     *
-</span><span class='line'>     * @param leeway
-</span><span class='line'>     * 容差(精确度)
-</span><span class='line'>     */
-</span><span class='line'>    // ②设置定时开始时间 间隔 精确度
-</span><span class='line'>    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC, 0.1 * NSEC_PER_SEC);
-</span><span class='line'>     // ③设置定时执行任务
-</span><span class='line'>    dispatch_source_set_event_handler(timer, ^{
-</span><span class='line'>        
-</span><span class='line'>        static NSInteger cnt = 1;
-</span><span class='line'>        NSLog(@"------------%ld", cnt++);
-</span><span class='line'>    });
-</span><span class='line'>    // ④激活定时器
-</span><span class='line'>    dispatch_resume(timer);
-</span><span class='line'>   // 持有定时器 避免ViewDidLoad方法结束timer变量消失引起定时器销毁
-</span><span class='line'>    _timer = timer;
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
-
-
-<p>GCD的使用很简单,不用担心记不住dispatch_source_t前几个字母时Xcode自动会提示你了.你要做的只是创建一个queue而已,其他代码都不用你写.
-<img src="http://upload-images.jianshu.io/upload_images/1523795-76dbe3407cefbbbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dispatch_source_t提示" /></p>
-
-<p><strong><em>几种实现定时任务的比较</em></strong></p>
-
-<table>
-<thead>
-<tr>
-<th> 方法来源        </th>
-<th style="text-align:center;">使用 </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td> NSObject中的方法    </td>
-<td style="text-align:center;"> 适合延时执行任务,可以在子线程,也可回到主线程刷新UI.在子线程中延时时,必须自己创建Runloop</td>
-</tr>
-<tr>
-<td> NSTimer      </td>
-<td style="text-align:center;"> 一般延时和周期性任务都可以使用,在子线程中使用时,必须自己创建Runloop.使用比较简单,存在循环引用的风险,解决办法参考<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>     </td>
-</tr>
-<tr>
-<td> CADisplayLink </td>
-<td style="text-align:center;"> 适合重复重绘界面,其频率和屏幕刷新固有频率相同</td>
-</tr>
-<tr>
-<td>GCD中的方法 </td>
-<td style="text-align:center;"> 可以代替NSTimer,使用比较简单.API是C语言格式的,一些读者可能不习惯</td>
-</tr>
-</tbody>
-</table>
-
-]]></content>
-  </entry>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | 命名规范]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/"/>
-    <updated>2015-10-11T16:31:12+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/10/11/ios-|-ming-ming-gui-fan</id>
-    <content type="html"><![CDATA[<blockquote><p>在编程中,命名能力也是编程功底的体现.虽然很多语言命名规范相似,但也有其本身的特性.</p></blockquote>
-
-<h5>非UI相关命名规范</h5>
-
-<p>1.私有方法
-在OC语言中,声明一个方法为私有的,需要把方法写在实现文件里.如何凸显该方法私有的呢?根据笔者的经验,建议大家给方法命名以<code>p_</code>,也可以项目前缀开头.如</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//  以p_开头,较为常用,便于开源
-</span><span class='line'>- (void)p_dealWithDataSource:(NSData *)sourceData {
-</span><span class='line'>}
-</span><span class='line'>
-</span><span class='line'>//  以项目前缀mf(missfresh)开头,也比较常用
-</span><span class='line'>- (void)mf_dealWithDataSource:(NSData *)sourceData {
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a></h1>
+    
+    
+      <p class="meta">
+        
 
 
-<p>关于前缀还有必要补充说明一下.苹果声明自己始终保有两字前缀,但很多开源库是以两字前缀命名(笔者个人也觉得两字前缀比较优雅).如苹果在iOS8引入了WK开头API,如果此时项目中也是以WK开头,方法就有可能和系统API重名,由此导致的引起重写系统私有API的bug.</p>
-
-<p>2.分类中方法
-    在分类中,给方法命名时,需要给方法加上前缀,以避免重写系统方法.分类中若存在和原始类中相同的方法,由于分类中的优先级比较高,会覆盖原始类中的实现.如</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//
-</span><span class='line'>//  UIImage+GIF.h
-</span><span class='line'>//  LBGIFImage
-</span><span class='line'>//
-</span><span class='line'>//  Created by Laurin Brandner on 06.01.12.
-</span><span class='line'>//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-</span><span class='line'>//
-</span><span class='line'>
-</span><span class='line'>#import &lt;UIKit/UIKit.h&gt;
-</span><span class='line'>
-</span><span class='line'>@interface UIImage (GIF)
-</span><span class='line'>
-</span><span class='line'>+ (UIImage *)sd_animatedGIFNamed:(NSString *)name;
-</span><span class='line'>
-</span><span class='line'>+ (UIImage *)sd_animatedGIFWithData:(NSData *)data;
-</span><span class='line'>
-</span><span class='line'>- (UIImage *)sd_animatedImageByScalingAndCroppingToSize:(CGSize)size;
-</span><span class='line'>
-</span><span class='line'>@end
-</span></code></pre></td></tr></table></div></figure>
 
 
-<p>上面是著名三方库SDWebImage中的一个分类.
-3.静态全部变量
-    在开发中,尽量减少使用宏定义,在合适的时候使用常量会是代码可读性更强.静态全局变量,在命名时,常以k(一般类型常量,const发音同konst,这是笔者在c语言编程时知道的)开头,其后紧跟类名,然后才是变量名.如</p>
+<time class='entry-date' datetime='2015-10-01T21:44:23+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>9:44 pm</span></time>
+        
+        
+ | <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/#comments">Comments</a>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>//Animation.h  
-</span><span class='line'>// 动画时长  
-</span><span class='line'>kAnimationDuration  </span></code></pre></td></tr></table></div></figure>
+      </p>
+    
+  </header>
 
 
-<p>有人可能会奇怪为什么要加上类名?如果项目中出现两个重名的静态全局变量,通过符号表很难区分.如果加上类名,出现问题时,更容易确定.</p>
-
-<p>4.实战分析
-下面以NSString方法为例,进行分析.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>+ (instancetype)stringWithFormat:(NSString *)format, ...
-</span><span class='line'>+ (instancetype)stringWithCharacters:(const unichar *)chars length:(NSUInteger)length</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面两个方法的返回值均是NSString对象,故方法名以名词string开头.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>– lowercaseStringWithLocale:</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面的方法返回值也是NSString对象,为了表达更精确,可以适当地给名词加上定语lowercase修饰.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)getCharacters:(unichar *)buffer range:(NSRange)aRange</span></code></pre></td></tr></table></div></figure>
-
-
-<p>OC中方法很少以get开头,一般是需要通过参数来接收返回值时,方法名才会以get开头.上面的buffer通过指针获得返回值.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)hasSuffix:(NSString *)aString
-</span><span class='line'>- (BOOL)isEqualToString:(NSString *)aString</span></code></pre></td></tr></table></div></figure>
-
-
-<p>方法返回值是BOOL类型时,常以is/has/can等开头,使得语义表达更为清楚.</p>
-
-<p>通过NSString一些方法的分析,相信读者能从中体会到OC方法命名的优雅,也希望读者细细揣摩系统方法的命名规则.</p>
-
-<h5>UI相关命名规范</h5>
-
-<p>1.控件命名
-UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件类型,除非是已被认可的缩写,一般不要用.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// UIButton中,
-</span><span class='line'>@property(nullable, nonatomic,readonly,strong) UILabel     *titleLabel;
-</span><span class='line'>@property(nullable, nonatomic,readonly,strong) UIImageView *imageView;</span></code></pre></td></tr></table></div></figure>
-
-
-<p>2.控件代理命名
-控件的代理为了通用性,一般都需要将本身传出.如果要表达该控件能或者是否应该做什么以及将要(正在/已经)等时态的意思时,代理方法命名时应该以类名开头且是第一个参数.这样的好处不言而喻.一般使用者都会根据类名直接联想代理方法,如UICollectionView,我会输入collection进行联想.这里并不是必须这样,关键看方法名语义是否通顺.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 方法以tableView开头且是第一个参数
-</span><span class='line'>- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath;</span></code></pre></td></tr></table></div></figure>
-
-
-<h5>其他建议</h5>
-
-<ul>
-<li>程序中,不要出现"魔法数字",方式①和②相比,可读性很明显.</li>
-</ul>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>① a &lt; 1000;
-</span><span class='line'>② string.length &lt; MAX_STRING_LENGTH;</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li><p>尽量延迟变量声明创建,使用时再创建,这样在读代码时不至于要猜测该变量的作用.</p></li>
-<li><p>方法实现不要过长,保持在10行以内,也可视情况而定.如果实现过长,可以重构为多个方法.</p></li>
-<li><p>根据场景重新命名方法.已有的方法实现可以实现相同的功能,但是根据场景不同,仍要重写一个方法,在内部调用已有方法.</p></li>
-<li><p>if语句不要嵌套过深,一般不要超过3层.代码刚写的时候一般不会有这个问题,多是在后期维护时根据需求不断嵌套.笔者建议修改者尽可能读懂原先逻辑,书写if语句可以并列多个,而不是层层嵌套.</p></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS | 全屏右滑返回]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/"/>
-    <updated>2015-10-01T21:44:23+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/10/01/ios-|-quan-ping-you-hua-fan-hui</id>
-    <content type="html"><![CDATA[<blockquote><p>随着手机屏幕的变大,原来右滑返回略显不够人性化,尤其是对手小的朋友,让我如何单手玩手机.对于app要全屏右滑或保持原生边缘触发,各有说辞,这里不讨论其好坏.</p></blockquote>
+  <div class="entry-content"><blockquote><p>随着手机屏幕的变大,原来右滑返回略显不够人性化,尤其是对手小的朋友,让我如何单手玩手机.对于app要全屏右滑或保持原生边缘触发,各有说辞,这里不讨论其好坏.</p></blockquote>
 
 <p>下面先看一下实现效果.</p>
 
@@ -774,15 +299,38 @@ UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件�
 <p><a href="https://github.com/Mrshang110/SGLFullScreenNavigationController">点击下载源码</a></p>
 
 <p>*温馨提示:如果对笔者分析时使用的工具感兴趣,可以在笔者的博客找到相关文章.</p>
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | UI调试利器Chisel使用实战(LLDB调试基础三)]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/"/>
-    <updated>2015-06-15T23:13:00+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/06/15/ios-|-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san</id>
-    <content type="html"><![CDATA[<blockquote><p>上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解.</p></blockquote>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-15T23:13:00+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:13 pm</span></time>
+        
+        
+ | <a href="/blog/2015/06/15/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>上一篇开发随笔主要介绍了Chisel的安装和常用命令功能简介.这一篇是实战篇,读者如果能实际操作一下,对Chisel会有更深的理解.</p></blockquote>
 
 <p>演示是的代码状态如下图:</p>
 
@@ -995,15 +543,38 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 <blockquote><p>以上这些在调试UI时比较常用且比较方便.Chisel提供的命令不止这些,可以通过help命令查看使用方法.</p></blockquote>
 
 <p>*温馨提示: cmd + k 可以清除控制台输出.</p>
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/"/>
-    <updated>2015-06-11T21:05:50+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/06/11/ios-|-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er</id>
-    <content type="html"><![CDATA[<blockquote><p>网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决.</p></blockquote>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T21:05:50+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:05 pm</span></time>
+        
+        
+ | <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决.</p></blockquote>
 
 <h3>Chisel简介</h3>
 
@@ -1146,15 +717,38 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 </tbody>
 </table>
 
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | 小心NSTimer中的循环引用]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/"/>
-    <updated>2015-06-11T20:35:12+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/06/11/ios-|-xiao-xin-nstimerzhong-de-xun-huan-yin-yong</id>
-    <content type="html"><![CDATA[<p>NSTimer大家都很熟悉,觉得用起来也很简单.然而,由NSTimer引起的循环引用,不经历过一次,一般很难查.
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/">iOS | 小心NSTimer中的循环引用</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T20:35:12+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:35 pm</span></time>
+        
+        
+ | <a href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>NSTimer大家都很熟悉,觉得用起来也很简单.然而,由NSTimer引起的循环引用,不经历过一次,一般很难查.
 下面看一段代码:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1396,15 +990,38 @@ hide隐藏视图,便于看清层次关系.show显示隐藏视图.</p>
 
 
 <p><code>weakifySelf</code>宏定义了一个弱引用的<code>weakSelf</code>,<code>strongifySelf</code>宏又根据<code>weakSelf</code>定义了一个强引用的self.这样在block内使用self和其他地方一样.这里的<code>self</code>和block外的<code>self </code>指向一样,但是不同的变量.</p>
-]]></content>
-  </entry>
+</div>
   
-  <entry>
-    <title type="html"><![CDATA[iOS | LLDB调试基础篇(一)]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/"/>
-    <updated>2015-04-11T17:03:04+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/04/11/ios-|-lldbdiao-shi-ji-chu-pian-[?]</id>
-    <content type="html"><![CDATA[<h3>LLDB简介</h3>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/">iOS | LLDB调试基础篇(一)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-11T17:03:04+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:03 pm</span></time>
+        
+        
+ | <a href="/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/#comments">Comments</a>
+
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h3>LLDB简介</h3>
 
 <blockquote><p>LLDB是一个调试器,在此之前,Xcode使用的是GDB调试器和GCC编译器,后来因为GCC官方对苹果的需求回应的不及时(据说),苹果选择投资LLVM,LLDB就取代了GDB.</p></blockquote>
 
@@ -1455,7 +1072,106 @@ foo
 <p> 这里,顺便提一下,po命令也可以代替expr,只不过语义上不如expr规范.expr是express的缩写.</p>
 
 <blockquote><p>大道至简.这些命令很简单,充分发挥其作用,可以给调试带来很多方便.这些只是LLDB的九牛一毛,如果读者感兴趣,可以继续关注.</p></blockquote>
-]]></content>
-  </entry>
+</div>
   
-</feed>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/index.html">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mrshang110';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
