@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | UI调试利器Chisel的安装方法(LLDB调试基础二) - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决. Chisel简介 Chisel是Facebook开源的一个插件,主要作用是辅助调试iOS App,它对LLDB命令进行了封装.换言之, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T21:05:50+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>网上关于Chisel的博客很多,但很多都不够实用(也或许是笔者没有发现).笔者在第一次安装Chisel时遇到了一些问题,查了很多相关资料才解决.</p></blockquote>
+
+<h3>Chisel简介</h3>
+
+<p>Chisel是Facebook开源的一个插件,主要作用是辅助调试iOS App,它对LLDB命令进行了封装.换言之,Chisel就是LLDB命令集合.如果需要,你可以自定制命令.</p>
+
+<h4>安装介绍</h4>
+
+<p>1.更新一下brew,为了可以安装chisel</p>
+
+<blockquote><p>brew update</p></blockquote>
+
+<p>2.你可能还没有安装 Xcode 的 Command Line Tools,在终端运行以下命令进行安装</p>
+
+<blockquote><p>xcode-select &ndash;install</p></blockquote>
+
+<p>3.正式开始安装</p>
+
+<blockquote><p>brew install chisel</p></blockquote>
+
+<p>提示: 如果出现安装被拒绝,可以在每个命令前加上sudo.例如</p>
+
+<blockquote><p>sudo brew update</p></blockquote>
+
+<p> <img src="http://upload-images.jianshu.io/upload_images/1523795-a36418146f4bdd95.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="安装过程最关键" /></p>
+
+<p>此时,只需按照提示进行操作,在 <code>~/.lldbinit</code>文件中加入Caveats中的提示,写入的一行命令.</p>
+
+<blockquote><p>命令行键入(粗体部分换成Caveats中的提示的一行命令): echo  <strong><em>command script import /usr/local/Cellar/chisel/1.0.0/libexec/fblldb.py</em></strong> >> ~/.lldbinit</p></blockquote>
+
+<h4>查看安装状态</h4>
+
+<p>1.命令行安装查看</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 1. 在命令行窗口输入lldb
+</span><span class='line'>shang:ios-mf-new shanggaolin$ lldb
+</span><span class='line'>(lldb) command source -s 1 '/Users/shanggaolin/Desktop/missfresh/ios-mf-new/./.lldbinit'
+</span><span class='line'>// 2.在命令行窗口输入help
+</span><span class='line'>(lldb) help
+</span><span class='line'>// 3. 向下翻滚可以看如下命令,说明chisel命令行安装成功
+</span><span class='line'>....
+</span><span class='line'>Current user-defined commands:
+</span><span class='line'>
+</span><span class='line'>  alamborder   -- For more information run 'help alamborder'
+</span><span class='line'>  alamunborder -- For more information run 'help alamunborder'
+</span><span class='line'>  binside      -- For more information run 'help binside'
+</span><span class='line'>  bmessage     -- For more information run 'help bmessage'
+</span><span class='line'>  border       -- For more information run 'help border'
+</span><span class='line'>  caflush      -- For more information run 'help caflush'
+</span><span class='line'>  dcomponents  -- For more information run 'help dcomponents'
+</span><span class='line'>  eobjc        -- For more information run 'help eobjc'
+</span><span class='line'>  eswift       -- For more information run 'help eswift'
+</span><span class='line'>  fa11y        -- For more information run 'help fa11y'
+</span><span class='line'>  flicker      -- For more information run 'help flicker'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2.Xcode安装查看</p>
+
+<p> 在Xocde控制台断点状态下输入help,向下翻滚同样可以看到想上面那些命令.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-fd602619d08f9160.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="控制台截图" />
+  现在,已经安装成功了,可以享受Chisel带来的方便了.</p>
+
+<p>*温馨提示:如果你的mac同时安装有不同版本的Xcode,可能会出现在控制台可以输入chisel命令,但是不会出现响应结果.遇到这种情况,换一下Xcode就ok.</p>
+
+<h3>Chisel常用命令</h3>
+
+<p>这里暂时先介绍一些命令作用,以便读者对Chisel有个初步体会.具体操作会在下一篇随笔中具体讲述.</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:center;"> 命令       </th>
+<th style="text-align:center;"> 作用  </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;"> pviews     </td>
+<td style="text-align:center;"> 递归打印view的描述(详细到常见属性,如 frame = (0 0; 126 126); userInteractionEnabled = NO; layer  = &hellip;) ,显示层级关系</td>
+</tr>
+<tr>
+<td style="text-align:center;"> pvc      </td>
+<td style="text-align:center;">  递归打印Viewcontroller的描述</td>
+</tr>
+<tr>
+<td style="text-align:center;"> visualize </td>
+<td style="text-align:center;"> 可以直接通过mac上Preview.app查看UIImage, CGImageRef, UIView, CALayer, NSData (of an image), UIColor, CIColor, or CGColorRef 等 </td>
+</tr>
+<tr>
+<td style="text-align:center;">fv</td>
+<td style="text-align:center;">搜索内存中的View,可以正则匹配类名</td>
+</tr>
+<tr>
+<td style="text-align:center;">fvc</td>
+<td style="text-align:center;">搜索内存中的ViewController,可以正则匹配类名</td>
+</tr>
+<tr>
+<td style="text-align:center;">show/hide</td>
+<td style="text-align:center;">显示或隐藏一个指定的View,便于观察其后视图</td>
+</tr>
+<tr>
+<td style="text-align:center;">caflush</td>
+<td style="text-align:center;">重新渲染界面</td>
+</tr>
+<tr>
+<td style="text-align:center;">border/unborder</td>
+<td style="text-align:center;">显示视图边界,在视图层次中方便观察</td>
+</tr>
+<tr>
+<td style="text-align:center;">bmessage</td>
+<td style="text-align:center;"> 为从父类继承本类未实现的方法打断点</td>
+</tr>
+<tr>
+<td style="text-align:center;">presponder</td>
+<td style="text-align:center;"> 打印自本视图起的响应链</td>
+</tr>
+<tr>
+<td style="text-align:center;">mask/unmask</td>
+<td style="text-align:center;">在View上添加或隐藏一个透明遮盖层</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T21:05:50+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:05 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=2121499" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2121499" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2121499"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/" title="Previous Post: iOS | 小心NSTimer中的循环引用">&laquo; iOS | 小心NSTimer中的循环引用</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/" title="Next Post: iOS | 全屏右滑返回">iOS | 全屏右滑返回 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

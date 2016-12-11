@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | 不同场景下的定时方法 - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="在之前的开发随笔小心NSTimer中的循环引用中介绍了NSTimer会因持有目标对象而引起内存泄漏(循环引用)以及解决办法.这篇随笔主要介绍iOS开发中其他几种实现定时任务的方式及其优缺点. 再谈NSTimer
+要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | 不同场景下的定时方法</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-12T19:50:49+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:50 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>在之前的开发随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>中介绍了NSTimer会因持有目标对象而引起内存泄漏(循环引用)以及解决办法.这篇随笔主要介绍iOS开发中其他几种实现定时任务的方式及其优缺点.</p>
+
+<p><strong><em>再谈NSTimer</em></strong>
+要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述,后续随笔会介绍).Runloop简单地说就是一个接收处理异步消息事件的循环,该循环中等待事件发生，然后将这个事件送到能处理它的地方。</p>
+
+<p>或许你还不是很明白,没有关系,有个初步概念就不影响你理解NSTimer了.</p>
+
+<p>NSTimer注册到Runloop中后,Runloop会周期性地触发注册的事件.但是这里的周期并不十分精确.Timer的属性Tolerance(容差)告诉系统可以允许的时间误差.一旦有大型的任务,错过这个周期需要执行的时间点±Tolerance,任务不会延后执行而是跳跃过去,下个周期继续.</p>
+
+<p><strong><em>NSObject的定时方法</em></strong>
+这里不会介绍NSObject的所有方法,主要是介绍其应该注意的地方.在介绍之前补充一句:主线程会自动创建Runloop,子线程不会创建.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- performSelector:withObject:afterDelay:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果该方法在主线程,可以正常执行,在子线程就会失效.这一系列方法有很多,如果读者感兴趣,可以阅读相关技术博客.这些方法的使用不是这篇随笔介绍的重点,因为这样博客有很多,再此重复意义不大.</p>
+
+<p><strong><em>CADisplayLink</em></strong></p>
+
+<blockquote><p>A CADisplayLink object is a timer object that allows your application to synchronize its drawing to the refresh rate of the display.
+Your application creates a new display link, providing a target object and a selector to be called when the screen is updated.</p></blockquote>
+
+<p>上面摘自苹果官方文档,CADisplayLink是一个定时器,使用它可以以和
+屏幕刷新频率相同的频率将内容绘到屏幕上.创建一个该类对象,设置好target和selector,在屏幕更新时就会调用该selector.</p>
+
+<p>其使用方法和NSTimer类似,这里不再赘述.下面介绍一个使用场合,如果读者需要用到,可以自行查阅相关资料,查阅资料无法解决时,也可以在评论一起探讨.</p>
+
+<p>CADisplayLink默认使用屏幕固有的刷新频率,精确度比较高,使用场景也较为单一.一般用在需要不断重绘界面时,比如UI动画底层实现.在实际应用中,没有NSTimer使用的多.</p>
+
+<p>如果对CADisplayLink感兴趣,可以<a href="https://github.com/zipme/RQShineLabel">点击</a>阅读一个使用CADisplayLink开源库的源码.</p>
+
+<p><img src="https://raw.githubusercontent.com/zipme/RQShineLabel/master/Screenshots/rqshinelabel.gif" alt="类似Secret文字渐变效果的开源库" /></p>
+
+<p><strong><em>GCD定时</em></strong>
+Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoop和mode，比NSTimer更加准时,性能更好.</p>
+
+<p>使用GCD实现定时功能也很简单.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#import "ViewController.h"
+</span><span class='line'>
+</span><span class='line'>@interface ViewController () {
+</span><span class='line'>    dispatch_source_t _timer;
+</span><span class='line'>}
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>@implementation ViewController
+</span><span class='line'>
+</span><span class='line'>- (void)viewDidLoad {
+</span><span class='line'>    [super viewDidLoad];
+</span><span class='line'>    // 获得一个queue
+</span><span class='line'>    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+</span><span class='line'>    // ①创建定时器
+</span><span class='line'>    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+</span><span class='line'>    /**函数原型
+</span><span class='line'>      dispatch_source_create(dispatch_source_type_t type,
+</span><span class='line'>    uintptr_t handle,
+</span><span class='line'>    unsigned long mask,
+</span><span class='line'>    dispatch_queue_t queue);
+</span><span class='line'>     *@param start
+</span><span class='line'>     * 开始时间
+</span><span class='line'>     *
+</span><span class='line'>     * @param interval
+</span><span class='line'>     *时间间隔
+</span><span class='line'>     *
+</span><span class='line'>     * @param leeway
+</span><span class='line'>     * 容差(精确度)
+</span><span class='line'>     */
+</span><span class='line'>    // ②设置定时开始时间 间隔 精确度
+</span><span class='line'>    dispatch_source_set_timer(timer, DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC, 0.1 * NSEC_PER_SEC);
+</span><span class='line'>     // ③设置定时执行任务
+</span><span class='line'>    dispatch_source_set_event_handler(timer, ^{
+</span><span class='line'>        
+</span><span class='line'>        static NSInteger cnt = 1;
+</span><span class='line'>        NSLog(@"------------%ld", cnt++);
+</span><span class='line'>    });
+</span><span class='line'>    // ④激活定时器
+</span><span class='line'>    dispatch_resume(timer);
+</span><span class='line'>   // 持有定时器 避免ViewDidLoad方法结束timer变量消失引起定时器销毁
+</span><span class='line'>    _timer = timer;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>GCD的使用很简单,不用担心记不住dispatch_source_t前几个字母时Xcode自动会提示你了.你要做的只是创建一个queue而已,其他代码都不用你写.
+<img src="http://upload-images.jianshu.io/upload_images/1523795-76dbe3407cefbbbf.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dispatch_source_t提示" /></p>
+
+<p><strong><em>几种实现定时任务的比较</em></strong></p>
+
+<table>
+<thead>
+<tr>
+<th> 方法来源        </th>
+<th style="text-align:center;">使用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> NSObject中的方法    </td>
+<td style="text-align:center;"> 适合延时执行任务,可以在子线程,也可回到主线程刷新UI.在子线程中延时时,必须自己创建Runloop</td>
+</tr>
+<tr>
+<td> NSTimer      </td>
+<td style="text-align:center;"> 一般延时和周期性任务都可以使用,在子线程中使用时,必须自己创建Runloop.使用比较简单,存在循环引用的风险,解决办法参考<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>     </td>
+</tr>
+<tr>
+<td> CADisplayLink </td>
+<td style="text-align:center;"> 适合重复重绘界面,其频率和屏幕刷新固有频率相同</td>
+</tr>
+<tr>
+<td>GCD中的方法 </td>
+<td style="text-align:center;"> 可以代替NSTimer,使用比较简单.API是C语言格式的,一些读者可能不习惯</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-11-12T19:50:49+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:50 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=2121499" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2121499" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2121499"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/" title="Previous Post: iOS | 命名规范">&laquo; iOS | 命名规范</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/" title="Next Post: iOS | UI调试利器Chisel使用实战(LLDB调试基础三)">iOS | UI调试利器Chisel使用实战(LLDB调试基础三) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

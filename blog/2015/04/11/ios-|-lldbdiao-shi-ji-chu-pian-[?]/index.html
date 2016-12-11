@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | LLDB调试基础篇(一) - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="LLDB简介 LLDB是一个调试器,在此之前,Xcode使用的是GDB调试器和GCC编译器,后来因为GCC官方对苹果的需求回应的不及时(据说),苹果选择投资LLVM,LLDB就取代了GDB. 使用  LLDB功能比较强大,介绍太多会打击很多初学者的自信心.这里,只会介绍一些比较常用的使用方法和命令 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | LLDB调试基础篇(一)</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-11T17:03:04+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:03 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>LLDB简介</h3>
+
+<blockquote><p>LLDB是一个调试器,在此之前,Xcode使用的是GDB调试器和GCC编译器,后来因为GCC官方对苹果的需求回应的不及时(据说),苹果选择投资LLVM,LLDB就取代了GDB.</p></blockquote>
+
+<h3>使用</h3>
+
+<p> LLDB功能比较强大,介绍太多会打击很多初学者的自信心.这里,只会介绍一些比较常用的使用方法和命令.
+下面的操作,都是基于debug状态的.在调试时,根据断点才能确定你要操作的上下文(上下文你可以暂时理解为范围,比如你在Word中更改文字颜色,这个操作也是有上下文的,只会对该上下文内的文字有效.这种理解并不十分准确,接触多了自己就能体会到具体含义了).</p>
+
+<h4>po/p命令</h4>
+
+<p>po命令可以打印断点所处上下文内的对象,以此来观察对象状态.或许你会想,将鼠标悬浮在变量上方也可以查看对象信息.Xcode没有那么给力,有时候这种方式很难看到该信息.即便可以,也没有po命令来的方便.通过po命令,你可以查看更多信息.比如断点附近没有self,你就无法查看self的信息;如果想查看本地偏好设置,你只需随便在某处打个断点,像<code>po [[NSUserDefaults standardUserDefaults] valueForKey:@"name"]</code>这样就OK了.</p>
+
+<p> p命令和po命令一样,前者是针对基本类型的,后者是针对对象类型的.</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-7de78ab09b57d9c5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="po命令示例" /></p>
+
+<p>当像下面这样,用p打印对象时,会输出对象的地址和描述.如果想打印对象的description方法返回的信息,需要使用po命令.</p>
+
+<blockquote><p>(lldb) p @[ @&ldquo;foo&rdquo;, @&ldquo;foo&rdquo; ]
+//这里$1是引用数组的变量
+(NSArray *) $1 = 0x00007fdb9b71b3e0 @&ldquo;2 objects&rdquo;</p>
+
+<hr />
+
+<p>//以对象形式打印变量
+(lldb) e -O &ndash; $1
+ <__NSArrayI 0x7fdb9b71b3e0>(
+foo,
+foo
+)</p></blockquote>
+
+<p>为了便于记忆,顺便提一下,po是print object的缩写,也就是<code>e -O --</code>的简写.</p>
+
+<h4>expr命令</h4>
+
+<p> 该命令可以在在调试时执行表达式,动态改变变量的值,更方便测试边界值.</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-37cbebfb12fd9e12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="expr命令" /></p>
+
+<p>调试时,在17行设置了断点,在程序被断点断着时,输入了<code>expr a = 2</code>,放开断点继续运行,看到控制台输出<code>a + b = 4</code>.</p>
+
+<p>下面看看怎么在调试时定义变量辅助调试.定义辅助变量和普通定义方法的唯一区别就是在变量名前添加了$符号.</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-36d797a0b4b30966.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="expr命令" /></p>
+
+<p>通过该命令,调试时就不用每次修改变量值重新运行.是不是很方便?</p>
+
+<p> 这里,顺便提一下,po命令也可以代替expr,只不过语义上不如expr规范.expr是express的缩写.</p>
+
+<blockquote><p>大道至简.这些命令很简单,充分发挥其作用,可以给调试带来很多方便.这些只是LLDB的九牛一毛,如果读者感兴趣,可以继续关注.</p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-04-11T17:03:04+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>5:03 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=2121499" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2121499" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2121499"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/" title="Next Post: iOS | 小心NSTimer中的循环引用">iOS | 小心NSTimer中的循环引用 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

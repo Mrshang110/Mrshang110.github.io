@@ -1,0 +1,502 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | 小心NSTimer中的循环引用 - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="NSTimer大家都很熟悉,觉得用起来也很简单.然而,由NSTimer引起的循环引用,不经历过一次,一般很难查.
+下面看一段代码: 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+- (void)viewDidLoad {
+[ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2015/06/11/ios-%7C-xiao-xin-nstimerzhong-de-xun-huan-yin-yong/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | 小心NSTimer中的循环引用</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T20:35:12+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:35 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>NSTimer大家都很熟悉,觉得用起来也很简单.然而,由NSTimer引起的循环引用,不经历过一次,一般很难查.
+下面看一段代码:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)viewDidLoad {
+</span><span class='line'>[super viewDidLoad];
+</span><span class='line'>
+</span><span class='line'>_timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+</span><span class='line'>target:self
+</span><span class='line'>selector:@selector(p_doSomeThing)
+</span><span class='line'>userInfo:nil
+</span><span class='line'>repeats:YES];
+</span><span class='line'>
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (void)p_doSomeThing {
+</span><span class='line'>// doSomeThing
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (void)p_stopDoSomeThing {
+</span><span class='line'>[self.timer invalidate];
+</span><span class='line'>self.timer = nil;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (void)dealloc {
+</span><span class='line'>[self.timer invalidate];
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的代码主要是利用定时器重复执行p_doSomeThing方法,在合适的时候调用p_stopDoSomeThing方法使定时器失效.</p>
+
+<p>能看出问题吗?在开始讨论上面代码问题之前,需要对NSTimer做一点说明.NSTimer的</p>
+
+<p>&lsquo;scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:&rsquo;</p>
+
+<p>方法的最后一个参数为YES时,NSTimer会保留目标对象,等到自身失效才释放.执行完任务后,一次性的定时器会自动失效;重复性的定时器,需要主动调用<code>invalidate</code>方法才会失效.</p>
+
+<p>了解<code>scheduledTimerWithTimeInterval: target: selector: userInfo: repeats:</code>最后一个参数含义之后,你发现何处出现了循环引用?</p>
+
+<p>创建定时器时,<code>当前控制器</code>(创建定时器的那个控制器,为了描述方便,简称当前控制器)引用而定时器了(为什么因引用定时器?后续要用到这个定时器对象),在给定时器添加任务时,定时器保留了<code>self</code>(当前控制器).这里就出现了循环引用.</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/1523795-92fd39ba101e00d9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="循环引用" /></p>
+
+<p>如果能在合适的时候打破循环引用,就不会有问题了.此时有两种选择:</p>
+
+<blockquote><p>1.控制器不再引用定时器<br/>
+2.定时器不再保留当前控制器</p></blockquote>
+
+<p>第一种是不可行的,那么就只有第二种方法了.也就是合适的时候调用<code>p_stopDoSomeThing</code>方法.然而,合适的时机很难找到.假如这是一个验证码倒计时程序,你可以在倒计时结束时调用<code>p_stopDoSomeThing</code>方法.但是你不能确定用户一定会等倒计时结束才返回到上一级页面.或许你想在<code>dealloc</code>方法中使定时器失效,那你就太天真了.此时定时器还保留着当前控制器,此方法是不可能调用的,因此会出现内存泄漏.或许在倒计时程序中,你可以重写返回方法,先调用<code>p_stopDoSomeThing</code>再返回,但这不是一个好主意.</p>
+
+<p>该问题出现的根本原因就是无法确保一定会调用<code>p_stopDoSomeThing</code>方法.针对这一问题,有些人会选择自己实现一个不保留目标对象的定时器.这里,并不打算采用那种从头写起的方法,正如AFN作者所说的</p>
+
+<blockquote><p>无数开发者尝试自己做一个简陋而脆弱的系统来实现网络缓存的功能，殊不知 NSURLCache 只要两行代码就能搞定且好上 100 倍。</p></blockquote>
+
+<p>这里采用block块的方法为NSTimer增加一个分类,具体细节看代码(程序员最好的语言是代码).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//.h文件
+</span><span class='line'>#import &lt;Foundation/Foundation.h&gt;
+</span><span class='line'>
+</span><span class='line'>@interface NSTimer (SGLUnRetain)
+</span><span class='line'>+ (NSTimer *)sgl_scheduledTimerWithTimeInterval:(NSTimeInterval)inerval
+</span><span class='line'>repeats:(BOOL)repeats
+</span><span class='line'>block:(void(^)(NSTimer *timer))block;
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>//.m文件
+</span><span class='line'>#import "NSTimer+SGLUnRetain.h"
+</span><span class='line'>
+</span><span class='line'>@implementation NSTimer (SGLUnRetain)
+</span><span class='line'>
+</span><span class='line'>+ (NSTimer *)sgl_scheduledTimerWithTimeInterval:(NSTimeInterval)inerval repeats:(BOOL)repeats block:(void (^)(NSTimer *timer))block{
+</span><span class='line'>
+</span><span class='line'>return [NSTimer scheduledTimerWithTimeInterval:inerval target:self selector:@selector(sgl_blcokInvoke:) userInfo:[block copy] repeats:repeats];
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>+ (void)sgl_blcokInvoke:(NSTimer *)timer {
+</span><span class='line'>
+</span><span class='line'>void (^block)(NSTimer *timer) = timer.userInfo;
+</span><span class='line'>
+</span><span class='line'>if (block) {
+</span><span class='line'>block(timer);
+</span><span class='line'>}
+</span><span class='line'>}
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>//控制器.m
+</span><span class='line'>
+</span><span class='line'>#import "ViewController.h"
+</span><span class='line'>#import "NSTimer+SGLUnRetain.h"
+</span><span class='line'>
+</span><span class='line'>//定义了一个__weak的self_weak_变量
+</span><span class='line'>#define weakifySelf  \
+</span><span class='line'>__weak __typeof(&*self)weakSelf = self;
+</span><span class='line'>
+</span><span class='line'>//局域定义了一个__strong的self指针指向self_weak
+</span><span class='line'>#define strongifySelf \
+</span><span class='line'>__strong __typeof(&*weakSelf)self = weakSelf;
+</span><span class='line'>
+</span><span class='line'>@interface ViewController ()
+</span><span class='line'>
+</span><span class='line'>@property(nonatomic, strong) NSTimer *timer;
+</span><span class='line'>
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>@implementation ViewController
+</span><span class='line'>- (void)viewDidLoad {
+</span><span class='line'>[super viewDidLoad];
+</span><span class='line'>
+</span><span class='line'>__block NSInteger i = 0;
+</span><span class='line'>weakifySelf
+</span><span class='line'>self.timer = [NSTimer sgl_scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer *timer) {
+</span><span class='line'>strongifySelf
+</span><span class='line'>[self p_doSomething];
+</span><span class='line'>NSLog(@"----------------");
+</span><span class='line'>if (i++ &gt; 10) {
+</span><span class='line'>[timer invalidate];
+</span><span class='line'>}
+</span><span class='line'>}];
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>- (void)p_doSomething {
+</span><span class='line'>
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p> 在使用中,最需要注意的就是下面这段代码:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>weakifySelf
+</span><span class='line'>self.timer = [NSTimer sgl_scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer *timer) {
+</span><span class='line'>strongifySelf
+</span><span class='line'>[self p_doSomething];
+</span><span class='line'>NSLog(@"----------------");
+</span><span class='line'>if (i++ &gt; 10) {
+</span><span class='line'>[timer invalidate];
+</span><span class='line'>}
+</span><span class='line'>}];</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>weakifySelf</code>宏定义了一个弱引用的<code>weakSelf</code>,<code>strongifySelf</code>宏又根据<code>weakSelf</code>定义了一个强引用的self.这样在block内使用self和其他地方一样.这里的<code>self</code>和block外的<code>self </code>指向一样,但是不同的变量.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-06-11T20:35:12+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:35 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=2121499" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2121499" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2121499"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/04/11/ios-%7C-lldbdiao-shi-ji-chu-pian-%5B%3F%5D/" title="Previous Post: iOS | LLDB调试基础篇(一)">&laquo; iOS | LLDB调试基础篇(一)</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/" title="Next Post: iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二) &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>iOS | 命名规范 - Mrshang110</title>
+  <meta name="author" content="尚高林">
+
+  
+  <meta name="description" content="在编程中,命名能力也是编程功底的体现.虽然很多语言命名规范相似,但也有其本身的特性. 非UI相关命名规范 1.私有方法
+在OC语言中,声明一个方法为私有的,需要把方法写在实现文件里.如何凸显该方法私有的呢?根据笔者的经验,建议大家给方法命名以p_,也可以项目前缀开头.如 1
+2
+3
+4
+5
+6
+7 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<!-- <link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> -- >
+
+  <!-- -->
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Mrshang110</a></h1>
+  
+    <h2>大道至简,水静流深,唯有热爱,才能走的更远</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss email">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+    <li><a href="shanggl@missfresh.cn" rel="subscribe-email" title="subscribe via email">Email</a></li>
+  
+</ul>
+  
+<form action="https://www.baidu.com/s" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="mrshang110.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">博客</a></li>
+  <li><a href="/blog/archives">归档</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">iOS | 命名规范</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-10-11T16:31:12+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:31 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>在编程中,命名能力也是编程功底的体现.虽然很多语言命名规范相似,但也有其本身的特性.</p></blockquote>
+
+<h5>非UI相关命名规范</h5>
+
+<p>1.私有方法
+在OC语言中,声明一个方法为私有的,需要把方法写在实现文件里.如何凸显该方法私有的呢?根据笔者的经验,建议大家给方法命名以<code>p_</code>,也可以项目前缀开头.如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//  以p_开头,较为常用,便于开源
+</span><span class='line'>- (void)p_dealWithDataSource:(NSData *)sourceData {
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>//  以项目前缀mf(missfresh)开头,也比较常用
+</span><span class='line'>- (void)mf_dealWithDataSource:(NSData *)sourceData {
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>关于前缀还有必要补充说明一下.苹果声明自己始终保有两字前缀,但很多开源库是以两字前缀命名(笔者个人也觉得两字前缀比较优雅).如苹果在iOS8引入了WK开头API,如果此时项目中也是以WK开头,方法就有可能和系统API重名,由此导致的引起重写系统私有API的bug.</p>
+
+<p>2.分类中方法
+    在分类中,给方法命名时,需要给方法加上前缀,以避免重写系统方法.分类中若存在和原始类中相同的方法,由于分类中的优先级比较高,会覆盖原始类中的实现.如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//
+</span><span class='line'>//  UIImage+GIF.h
+</span><span class='line'>//  LBGIFImage
+</span><span class='line'>//
+</span><span class='line'>//  Created by Laurin Brandner on 06.01.12.
+</span><span class='line'>//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+</span><span class='line'>//
+</span><span class='line'>
+</span><span class='line'>#import &lt;UIKit/UIKit.h&gt;
+</span><span class='line'>
+</span><span class='line'>@interface UIImage (GIF)
+</span><span class='line'>
+</span><span class='line'>+ (UIImage *)sd_animatedGIFNamed:(NSString *)name;
+</span><span class='line'>
+</span><span class='line'>+ (UIImage *)sd_animatedGIFWithData:(NSData *)data;
+</span><span class='line'>
+</span><span class='line'>- (UIImage *)sd_animatedImageByScalingAndCroppingToSize:(CGSize)size;
+</span><span class='line'>
+</span><span class='line'>@end
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面是著名三方库SDWebImage中的一个分类.
+3.静态全部变量
+    在开发中,尽量减少使用宏定义,在合适的时候使用常量会是代码可读性更强.静态全局变量,在命名时,常以k(一般类型常量,const发音同konst,这是笔者在c语言编程时知道的)开头,其后紧跟类名,然后才是变量名.如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//Animation.h  
+</span><span class='line'>// 动画时长  
+</span><span class='line'>kAnimationDuration  </span></code></pre></td></tr></table></div></figure>
+
+
+<p>有人可能会奇怪为什么要加上类名?如果项目中出现两个重名的静态全局变量,通过符号表很难区分.如果加上类名,出现问题时,更容易确定.</p>
+
+<p>4.实战分析
+下面以NSString方法为例,进行分析.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>+ (instancetype)stringWithFormat:(NSString *)format, ...
+</span><span class='line'>+ (instancetype)stringWithCharacters:(const unichar *)chars length:(NSUInteger)length</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面两个方法的返回值均是NSString对象,故方法名以名词string开头.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>– lowercaseStringWithLocale:</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面的方法返回值也是NSString对象,为了表达更精确,可以适当地给名词加上定语lowercase修饰.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)getCharacters:(unichar *)buffer range:(NSRange)aRange</span></code></pre></td></tr></table></div></figure>
+
+
+<p>OC中方法很少以get开头,一般是需要通过参数来接收返回值时,方法名才会以get开头.上面的buffer通过指针获得返回值.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (BOOL)hasSuffix:(NSString *)aString
+</span><span class='line'>- (BOOL)isEqualToString:(NSString *)aString</span></code></pre></td></tr></table></div></figure>
+
+
+<p>方法返回值是BOOL类型时,常以is/has/can等开头,使得语义表达更为清楚.</p>
+
+<p>通过NSString一些方法的分析,相信读者能从中体会到OC方法命名的优雅,也希望读者细细揣摩系统方法的命名规则.</p>
+
+<h5>UI相关命名规范</h5>
+
+<p>1.控件命名
+UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件类型,除非是已被认可的缩写,一般不要用.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// UIButton中,
+</span><span class='line'>@property(nullable, nonatomic,readonly,strong) UILabel     *titleLabel;
+</span><span class='line'>@property(nullable, nonatomic,readonly,strong) UIImageView *imageView;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2.控件代理命名
+控件的代理为了通用性,一般都需要将本身传出.如果要表达该控件能或者是否应该做什么以及将要(正在/已经)等时态的意思时,代理方法命名时应该以类名开头且是第一个参数.这样的好处不言而喻.一般使用者都会根据类名直接联想代理方法,如UICollectionView,我会输入collection进行联想.这里并不是必须这样,关键看方法名语义是否通顺.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 方法以tableView开头且是第一个参数
+</span><span class='line'>- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath;</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>其他建议</h5>
+
+<ul>
+<li>程序中,不要出现"魔法数字",方式①和②相比,可读性很明显.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>① a &lt; 1000;
+</span><span class='line'>② string.length &lt; MAX_STRING_LENGTH;</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><p>尽量延迟变量声明创建,使用时再创建,这样在读代码时不至于要猜测该变量的作用.</p></li>
+<li><p>方法实现不要过长,保持在10行以内,也可视情况而定.如果实现过长,可以重构为多个方法.</p></li>
+<li><p>根据场景重新命名方法.已有的方法实现可以实现相同的功能,但是根据场景不同,仍要重写一个方法,在内部调用已有方法.</p></li>
+<li><p>if语句不要嵌套过深,一般不要超过3层.代码刚写的时候一般不会有这个问题,多是在后期维护时根据需求不断嵌套.笔者建议修改者尽可能读懂原先逻辑,书写if语句可以并列多个,而不是层层嵌套.</p></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-10-11T16:31:12+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:31 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  
+<!-- JiaThis Button BEGIN -->
+<div class="jiathis_style_24x24">
+	<a class="jiathis_button_qzone"></a>
+	<a class="jiathis_button_tsina"></a>
+	<a class="jiathis_button_tqq"></a>
+	<a class="jiathis_button_weixin"></a>
+	<a class="jiathis_button_renren"></a>
+	<a href="http://www.jiathis.com/share?uid=2121499" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {data_track_clickback:'true'};
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=2121499" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2121499"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/" title="Previous Post: iOS | 全屏右滑返回">&laquo; iOS | 全屏右滑返回</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/" title="Next Post: iOS | 不同场景下的定时方法">iOS | 不同场景下的定时方法 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>最新博客</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/ios-%7C-uidiao-shi-li-qi-chiselshi-yong-shi-zhan-lldbdiao-shi-ji-chu-san/">iOS | UI调试利器Chisel使用实战(LLDB调试基础三)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/">iOS | 命名规范</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/10/01/ios-%7C-quan-ping-you-hua-fan-hui/">iOS | 全屏右滑返回</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/06/11/ios-%7C-uidiao-shi-li-qi-chiselde-an-zhuang-fang-fa-lldbdiao-shi-ji-chu-er/">iOS | UI调试利器Chisel的安装方法(LLDB调试基础二)</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+<section>
+    <h1>新浪微博</h1>
+    <ul id="weibo">
+    <li>
+    <iframe width="100%" height="200" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=200&fansRow=2&ptype=1&speed=0&skin=1&isTitle=0&noborder=1&isWeibo=1&isFans=0&uid=2930359267&verifier=c514d0e3&dpc=1"></iframe>
+    </li>
+    </ul>
+</section>
+
+<section>
+<h1>友情链接</h1>
+<ul>
+        <li>
+        <a href="http://www.jianshu.com/users/431100126cf9/latest_articles">简书-iOS文集</a>
+        </li>
+</ul>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 by 尚高林
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
