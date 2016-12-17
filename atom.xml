@@ -4,7 +4,7 @@
   <title><![CDATA[Mrshang110]]></title>
   <link href="http://mrshang110.github.io/atom.xml" rel="self"/>
   <link href="http://mrshang110.github.io/"/>
-  <updated>2016-12-12T12:51:14+08:00</updated>
+  <updated>2016-12-17T13:31:19+08:00</updated>
   <id>http://mrshang110.github.io/</id>
   <author>
     <name><![CDATA[尚高林]]></name>
@@ -12,6 +12,227 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hit-Testing in iOS]]></title>
+    <link href="http://mrshang110.github.io/blog/2016/12/17/hit-test/"/>
+    <updated>2016-12-17T13:24:13+08:00</updated>
+    <id>http://mrshang110.github.io/blog/2016/12/17/hit-test</id>
+    <content type="html"><![CDATA[<blockquote><p>这是一篇阐述Hit-Testing很好的文章,翻译过来和大家分享.译者在查找相关资料时,发现网上很多博客关于iOS touch事件处理有明显的理解错误问题,内容只根据几个简单log就开始解释事件处理流程.</p></blockquote>
+
+<p>一个点(如touch-point)是否和一个绘制在屏幕上的图像对象(如UIView)相交(intersects),决定这一结果的过程就是hit-testing.找出用户手指下能接收触摸事件的那个最前端的UIView,在iOS中就是用hit-testing实现的. 它的算法实现反先序的深度优先遍历算法(reverse pre-order depth-first traversal algorithm).</p>
+
+<p>在解释hit-testing工作原理前,理解它是怎么执行的很有必要.下图展示了单点触摸开始到结束的高层次的流向(high-level flow).</p>
+
+<p><img src="http://smnh.me/images/hit-test-touch-event-flow.png" alt="" /></p>
+
+<p>每次一个手指触摸屏幕,hit-testing就会像上面那样执行.在此之前,view或gesture会接收到触摸对象(touch)所属的事件(event).</p>
+
+<blockquote><p>不知什么原因,hit-testing会连续执行多次.不过,多次确定的hit-testing view一样.</p></blockquote>
+
+<p>hit-testing完成后,触摸点下最前端的view也确定了.确定的hit-testing view被关联上各个阶段的触摸事件序列(例如:开始,移动,结束,取消).另外,hit-testing view和添加在该view上的手势以及其祖先都会被关联touch对象.</p>
+
+<p>需要注意的是即使手指移出hit-testing view,它依然会接收touch对象,直到touch event序列结束.</p>
+
+<blockquote><p>touch对象在hit-test view整个生命周期内都被关联着,即使移到了该view外.</p>
+
+<p> 参看:iOS事件处理指南,iOS开发者库</p></blockquote>
+
+<p>如先前所说,hit-testing使用的是反先序深度优先遍历算法(先遍历根节点,然后按索引由高到低遍历子树).这种遍历方式可以减少迭代,一旦遍历到包含触摸点的最深层后代view,既可以停止搜索.这种情况是可能的,因为子视图总是渲染在父视图上,兄弟视图总是渲染在subview数组中索引值低的兄弟视图上.如此,当多个重叠视图包含具体点时,右子树中最深的view将会是最前端的view.</p>
+
+<blockquote><p>表面上,subview会遮盖parent view的部分或全部.每个superview以数组的形式有序地存储在subview,subview在数组中的顺序影响着该view的显示.两个兄弟subview相遮盖时,最后加入数组的(或被移到subview数组后面的)会显示在另一个的上面.</p>
+
+<p>参看:iOS开发指南,iOS开发者库</p></blockquote>
+
+<p>下图是一个屏幕上的用户界面和它的视图层次树的例子.这棵树的分支从左到右的分布反应了subview数组的顺序.
+<img src="http://smnh.me/images/hit-test-view-hierarchy.png" alt="" /></p>
+
+<p>正如所看到的,&ldquo;View A"和"View B"是子view,"View B.1"和"View A.2"相遮盖."View B"比"View A"的索引值大,"View B"和其子view会渲染在"View A"和其子view之上.当用户手指触摸屏幕触发hit-testing时,"View B"就是hit-testing view.</p>
+
+<p>使用反先序的深度优先算法,一旦发现最深层后代view包含touch-point,就可以停止遍历.
+<img src="http://smnh.me/images/hit-test-depth-first-traversal.png" alt="" /></p>
+
+<p>该深度优先算法开始先给view的root view(UIWindow)发送hitTest:withEvent消息.这个方法的返回值是包含touch-point的最前端的view.</p>
+
+<p>下面流程图可以说明hit-test逻辑.</p>
+
+<p><img src="http://smnh.me/images/hit-test-flowchart.png" alt="" /></p>
+
+<p>下面代码是原生hitTest:withEvent:方法的可能实现.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+</span><span class='line'>    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha &lt;= 0.01) {
+</span><span class='line'>        return nil;
+</span><span class='line'>    }
+</span><span class='line'>    if ([self pointInside:point withEvent:event]) {
+</span><span class='line'>        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+</span><span class='line'>            CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+</span><span class='line'>            UIView *hitTestView = [subview hitTest:convertedPoint withEvent:event];
+</span><span class='line'>            if (hitTestView) {
+</span><span class='line'>                return hitTestView;
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        return self;
+</span><span class='line'>    }
+</span><span class='line'>    return nil;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>hitTest:withEvent:首先检查view是否可以接收touch,一个view如果可以接收touch,需:</p>
+
+<ul>
+<li><p>view没有隐藏 <br/>
+<code>self.hidden = NO</code></p></li>
+<li><p>view开启用户交互<br/>
+<code>self.userInteractionEnable = YES</code></p></li>
+<li><p>view的alpha值大于0.01<br/>
+<code>self.alpha &gt; 0.01</code></p></li>
+<li><p>viwe包含该点<br/>
+<code>pointInside:withEvent: == YES</code></p></li>
+</ul>
+
+
+<p>满足上述,view允许接收touch,按照从后向前的顺序向该view的每一个subview发送hitTest:withEvent:来遍历,当返回非nil时停止.touch-point下,在subview中进行hit-testing,最先返回非nil值是前端的view返回的,同时也是也是当前接收接收者的返回值.如果接收者的subview都返回nil或者没有subview,返回接收者.</p>
+
+<p>相反,view不允许接收touch,这个方法不会遍历其子树,直接返回nil.由此可知,hit-test过程可能不会遍历视图层次中的每个view.</p>
+
+<h3>重写hitTest:withEvent:通用的使用案例</h3>
+
+<p>在各阶段touch事件序列中的touch事件想要由一个view重定向到另一个view处理时,可以重写 <code>hitTest:withEvent:</code> 方法.</p>
+
+<blockquote><p>重写<code>hitTest:withEvent:</code>方法来重定向touch事件,将会重定向touch事件序列中的所有touch事件.hit-test执行必须在第一个touch事件发送到接收者之前(UITouchPhaseBegan阶段touch).</p></blockquote>
+
+<h4>扩大view触摸区(touch area)</h4>
+
+<p>一个使用场景,view的触摸区需要大于它的bounds时,可以重写<code>hitTest:withEvent:</code>方法.例如,下图展示了一个20x20的UIView,处理touches附近的区域,这个尺寸可能太小了.因此,通过重写<code>hitTest:withEvent:</code>,触摸区可以在每个方向上扩大10坐标点.</p>
+
+<p><img src="http://smnh.me/images/hit-test-increase-touch-area.png" alt="" /></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+</span><span class='line'>    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha &lt;= 0.01) {
+</span><span class='line'>        return nil;
+</span><span class='line'>    }
+</span><span class='line'>    CGRect touchRect = CGRectInset(self.bounds, -10, -10);
+</span><span class='line'>    if (CGRectContainsPoint(touchRect, point)) {
+</span><span class='line'>        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+</span><span class='line'>            CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+</span><span class='line'>            UIView *hitTestView = [subview hitTest:convertedPoint withEvent:event];
+</span><span class='line'>            if (hitTestView) {
+</span><span class='line'>                return hitTestView;
+</span><span class='line'>            }
+</span><span class='line'>        }
+</span><span class='line'>        return self;
+</span><span class='line'>    }
+</span><span class='line'>    return nil;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>注意:为了hit-test正常,父视图的bounds应该包含目标子视图的触摸区,或者重写<code>hitTest:withEvent:</code>来包含目标触摸区.</p></blockquote>
+
+<h4>传事件到下面的视图</h4>
+
+<p>有时,一个视图忽略touch事件,把该事件传给它下面的视图是很有必要的.举个例子,一个透明的遮盖视图(transparent overlay)放置在app其他的所有视图上.该遮盖视图有一些control和button类型的子视图,它们应该正常响应触摸事件.但触摸遮盖视图的其它位置应该把事件传给它下面的视图.为了实现这一个行为,遮盖层的<code>hitTest:withEvent:</code>方法可以被重写,它的子视图包含touch-point时返回子视图,其它情况返回nil,这里的其它情况也包括遮盖视图包含touch-point.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+</span><span class='line'>    UIView *hitTestView = [super hitTest:point withEvent:event];
+</span><span class='line'>    if (hitTestView == self) {
+</span><span class='line'>        hitTestView = nil;
+</span><span class='line'>    }
+</span><span class='line'>    return hitTestView;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>译者注:<br/>
+1.这个案例我在翻译时反复读了原文很多遍,原文中的views below指的是视图书中更靠近根节点的那些视图,而苹果文档中的lowest view指的是最靠近叶子节点的视图.<br/>
+ 2.这里的透明遮盖视图本身是可以响应的touch的.
+ 3.作者说遮盖视图是透明的,想构造一种使用场景,如果子控件可以响应,就让子控件响应,如果触摸不在子控件上,遮盖视图就把交由它下面的视图响应.</p></blockquote>
+
+<h4>传递事件给子视图</h4>
+
+<p>一个不同的使用案例是父视图把事件传给它的子视图.在子视图展示在父视图的一个区域,但应该响应出现在父视图上的所有touch时,可能需要这种使用方式.一个例子,由一个父视图和UIScrollview来创建图片的旋转木马效果,UIScrollview的<code>pagingEnabled</code>属性设置为YES,<code>clipsToBounds</code>属性设置为NO.</p>
+
+<p><img src="http://smnh.me/images/hit-test-pass-touches-to-subviews.png" alt="" /></p>
+
+<p>为了让UIScrollview不仅能响应出现在自己bounds内的touch,也能响应父视图bounds内的touch,父视图的<code>hitTest:withEvent:</code>方法可以像下面这种方式重写:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+</span><span class='line'>    UIView *hitTestView = [super hitTest:point withEvent:event];
+</span><span class='line'>    if (hitTestView) {
+</span><span class='line'>        hitTestView = self.scrollView;
+</span><span class='line'>    }
+</span><span class='line'>    return hitTestView;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>至此,文章翻译结束.<a href="http://smnh.me/hit-testing-in-ios/">原文查看</a></p>
+
+<h4>译者的话</h4>
+
+<p>在查阅资料时,不要只是看看,最好动手尝试一下.否则,你看过的东西即便是错的,也会形成你的认知.</p>
+
+<p>不信你可以看看网上关于下面这类方法的博客,看看他们是如何解释<code>super</code>一下的作用.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event {
+</span><span class='line'>    [super touchesBegan:touches withEvent:event];
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>很多解释都会扯到父视图,至少从表面实验结果这是对的,注释掉<code>[super touchesBegan:touches withEvent:event];</code>,父视图的该方法确实不会执行,加上就会执行.这里的<code>super</code>和父视图完全没关系,而是为了调用父类的方法.</p>
+
+<p>为啥注释点不调用父视图的该方法呢?很简单,如果hit-test view能处理touch事件就不会继续沿着响应者链继续传下去了.我们在hit-test view中实现了<code>- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches</code>,就意味着hit-test view可以处理touch事件,所以事件不会继续传了.如果调用了<code>[super touchesBegan:touches withEvent:event];</code>呢?如果该hit-test view的父类没有实现该方法,就会传给响应者链中的下一个响应者,这样父视图中的该方法就会被调用.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚]]></title>

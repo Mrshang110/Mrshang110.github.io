@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>http://mrshang110.github.io/blog/2016/12/17/hit-test/</loc>
+<lastmod>2016-12-17T13:24:13+08:00</lastmod>
+</url>
+<url>
 <loc>http://mrshang110.github.io/blog/2016/11/21/ios-%7C-bool/</loc>
 <lastmod>2016-11-21T20:39:12+08:00</lastmod>
 </url>
@@ -48,6 +52,9 @@
 </url>
 <url>
 <loc>http://mrshang110.github.io/blog/categories/ioskai-fa/</loc>
+</url>
+<url>
+<loc>http://mrshang110.github.io/posts/2/</loc>
 </url>
 <url>
 <loc>http://mrshang110.github.io/posts/2/</loc>

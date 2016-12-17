@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ios开发 | Mrshang110]]></title>
   <link href="http://mrshang110.github.io/blog/categories/ioskai-fa/atom.xml" rel="self"/>
   <link href="http://mrshang110.github.io/"/>
-  <updated>2016-12-12T12:51:14+08:00</updated>
+  <updated>2016-12-17T13:31:19+08:00</updated>
   <id>http://mrshang110.github.io/</id>
   <author>
     <name><![CDATA[尚高林]]></name>
@@ -12,6 +12,176 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hit-Testing in iOS]]></title>
+    <link href="http://mrshang110.github.io/blog/2016/12/17/hit-test/"/>
+    <updated>2016-12-17T13:24:13+08:00</updated>
+    <id>http://mrshang110.github.io/blog/2016/12/17/hit-test</id>
+    <content type="html"><![CDATA[<blockquote><p>这是一篇阐述Hit-Testing很好的文章,翻译过来和大家分享.译者在查找相关资料时,发现网上很多博客关于iOS touch事件处理有明显的理解错误问题,内容只根据几个简单log就开始解释事件处理流程.</p></blockquote>
+
+<p>一个点(如touch-point)是否和一个绘制在屏幕上的图像对象(如UIView)相交(intersects),决定这一结果的过程就是hit-testing.找出用户手指下能接收触摸事件的那个最前端的UIView,在iOS中就是用hit-testing实现的. 它的算法实现反先序的深度优先遍历算法(reverse pre-order depth-first traversal algorithm).</p>
+
+<p>在解释hit-testing工作原理前,理解它是怎么执行的很有必要.下图展示了单点触摸开始到结束的高层次的流向(high-level flow).</p>
+
+<p><img src="http://smnh.me/images/hit-test-touch-event-flow.png" alt="" /></p>
+
+<p>每次一个手指触摸屏幕,hit-testing就会像上面那样执行.在此之前,view或gesture会接收到触摸对象(touch)所属的事件(event).</p>
+
+<blockquote><p>不知什么原因,hit-testing会连续执行多次.不过,多次确定的hit-testing view一样.</p></blockquote>
+
+<p>hit-testing完成后,触摸点下最前端的view也确定了.确定的hit-testing view被关联上各个阶段的触摸事件序列(例如:开始,移动,结束,取消).另外,hit-testing view和添加在该view上的手势以及其祖先都会被关联touch对象.</p>
+
+<p>需要注意的是即使手指移出hit-testing view,它依然会接收touch对象,直到touch event序列结束.</p>
+
+<blockquote><p>touch对象在hit-test view整个生命周期内都被关联着,即使移到了该view外.</p>
+
+<p> 参看:iOS事件处理指南,iOS开发者库</p></blockquote>
+
+<p>如先前所说,hit-testing使用的是反先序深度优先遍历算法(先遍历根节点,然后按索引由高到低遍历子树).这种遍历方式可以减少迭代,一旦遍历到包含触摸点的最深层后代view,既可以停止搜索.这种情况是可能的,因为子视图总是渲染在父视图上,兄弟视图总是渲染在subview数组中索引值低的兄弟视图上.如此,当多个重叠视图包含具体点时,右子树中最深的view将会是最前端的view.</p>
+
+<blockquote><p>表面上,subview会遮盖parent view的部分或全部.每个superview以数组的形式有序地存储在subview,subview在数组中的顺序影响着该view的显示.两个兄弟subview相遮盖时,最后加入数组的(或被移到subview数组后面的)会显示在另一个的上面.</p>
+
+<p>参看:iOS开发指南,iOS开发者库</p></blockquote>
+
+<p>下图是一个屏幕上的用户界面和它的视图层次树的例子.这棵树的分支从左到右的分布反应了subview数组的顺序.
+<img src="http://smnh.me/images/hit-test-view-hierarchy.png" alt="" /></p>
+
+<p>正如所看到的,&ldquo;View A"和"View B"是子view,"View B.1"和"View A.2"相遮盖."View B"比"View A"的索引值大,"View B"和其子view会渲染在"View A"和其子view之上.当用户手指触摸屏幕触发hit-testing时,"View B"就是hit-testing view.</p>
+
+<p>使用反先序的深度优先算法,一旦发现最深层后代view包含touch-point,就可以停止遍历.
+<img src="http://smnh.me/images/hit-test-depth-first-traversal.png" alt="" /></p>
+
+<p>该深度优先算法开始先给view的root view(UIWindow)发送hitTest:withEvent消息.这个方法的返回值是包含touch-point的最前端的view.</p>
+
+<p>下面流程图可以说明hit-test逻辑.</p>
+
+<p><img src="http://smnh.me/images/hit-test-flowchart.png" alt="" /></p>
+
+<p>下面代码是原生hitTest:withEvent:方法的可能实现.</p>
+
+<pre><code>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha &lt;= 0.01) {
+        return nil;
+    }
+    if ([self pointInside:point withEvent:event]) {
+        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+            CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+            UIView *hitTestView = [subview hitTest:convertedPoint withEvent:event];
+            if (hitTestView) {
+                return hitTestView;
+            }
+        }
+        return self;
+    }
+    return nil;
+}
+</code></pre>
+
+<p>hitTest:withEvent:首先检查view是否可以接收touch,一个view如果可以接收touch,需:</p>
+
+<ul>
+<li><p>view没有隐藏 <br/>
+<code>self.hidden = NO</code></p></li>
+<li><p>view开启用户交互<br/>
+<code>self.userInteractionEnable = YES</code></p></li>
+<li><p>view的alpha值大于0.01<br/>
+<code>self.alpha &gt; 0.01</code></p></li>
+<li><p>viwe包含该点<br/>
+<code>pointInside:withEvent: == YES</code></p></li>
+</ul>
+
+
+<p>满足上述,view允许接收touch,按照从后向前的顺序向该view的每一个subview发送hitTest:withEvent:来遍历,当返回非nil时停止.touch-point下,在subview中进行hit-testing,最先返回非nil值是前端的view返回的,同时也是也是当前接收接收者的返回值.如果接收者的subview都返回nil或者没有subview,返回接收者.</p>
+
+<p>相反,view不允许接收touch,这个方法不会遍历其子树,直接返回nil.由此可知,hit-test过程可能不会遍历视图层次中的每个view.</p>
+
+<h3>重写hitTest:withEvent:通用的使用案例</h3>
+
+<p>在各阶段touch事件序列中的touch事件想要由一个view重定向到另一个view处理时,可以重写 <code>hitTest:withEvent:</code> 方法.</p>
+
+<blockquote><p>重写<code>hitTest:withEvent:</code>方法来重定向touch事件,将会重定向touch事件序列中的所有touch事件.hit-test执行必须在第一个touch事件发送到接收者之前(UITouchPhaseBegan阶段touch).</p></blockquote>
+
+<h4>扩大view触摸区(touch area)</h4>
+
+<p>一个使用场景,view的触摸区需要大于它的bounds时,可以重写<code>hitTest:withEvent:</code>方法.例如,下图展示了一个20x20的UIView,处理touches附近的区域,这个尺寸可能太小了.因此,通过重写<code>hitTest:withEvent:</code>,触摸区可以在每个方向上扩大10坐标点.</p>
+
+<p><img src="http://smnh.me/images/hit-test-increase-touch-area.png" alt="" /></p>
+
+<pre><code>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha &lt;= 0.01) {
+        return nil;
+    }
+    CGRect touchRect = CGRectInset(self.bounds, -10, -10);
+    if (CGRectContainsPoint(touchRect, point)) {
+        for (UIView *subview in [self.subviews reverseObjectEnumerator]) {
+            CGPoint convertedPoint = [subview convertPoint:point fromView:self];
+            UIView *hitTestView = [subview hitTest:convertedPoint withEvent:event];
+            if (hitTestView) {
+                return hitTestView;
+            }
+        }
+        return self;
+    }
+    return nil;
+}
+</code></pre>
+
+<blockquote><p>注意:为了hit-test正常,父视图的bounds应该包含目标子视图的触摸区,或者重写<code>hitTest:withEvent:</code>来包含目标触摸区.</p></blockquote>
+
+<h4>传事件到下面的视图</h4>
+
+<p>有时,一个视图忽略touch事件,把该事件传给它下面的视图是很有必要的.举个例子,一个透明的遮盖视图(transparent overlay)放置在app其他的所有视图上.该遮盖视图有一些control和button类型的子视图,它们应该正常响应触摸事件.但触摸遮盖视图的其它位置应该把事件传给它下面的视图.为了实现这一个行为,遮盖层的<code>hitTest:withEvent:</code>方法可以被重写,它的子视图包含touch-point时返回子视图,其它情况返回nil,这里的其它情况也包括遮盖视图包含touch-point.</p>
+
+<pre><code>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hitTestView = [super hitTest:point withEvent:event];
+    if (hitTestView == self) {
+        hitTestView = nil;
+    }
+    return hitTestView;
+}
+</code></pre>
+
+<blockquote><p>译者注:<br/>
+1.这个案例我在翻译时反复读了原文很多遍,原文中的views below指的是视图书中更靠近根节点的那些视图,而苹果文档中的lowest view指的是最靠近叶子节点的视图.<br/>
+ 2.这里的透明遮盖视图本身是可以响应的touch的.
+ 3.作者说遮盖视图是透明的,想构造一种使用场景,如果子控件可以响应,就让子控件响应,如果触摸不在子控件上,遮盖视图就把交由它下面的视图响应.</p></blockquote>
+
+<h4>传递事件给子视图</h4>
+
+<p>一个不同的使用案例是父视图把事件传给它的子视图.在子视图展示在父视图的一个区域,但应该响应出现在父视图上的所有touch时,可能需要这种使用方式.一个例子,由一个父视图和UIScrollview来创建图片的旋转木马效果,UIScrollview的<code>pagingEnabled</code>属性设置为YES,<code>clipsToBounds</code>属性设置为NO.</p>
+
+<p><img src="http://smnh.me/images/hit-test-pass-touches-to-subviews.png" alt="" /></p>
+
+<p>为了让UIScrollview不仅能响应出现在自己bounds内的touch,也能响应父视图bounds内的touch,父视图的<code>hitTest:withEvent:</code>方法可以像下面这种方式重写:</p>
+
+<pre><code>- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hitTestView = [super hitTest:point withEvent:event];
+    if (hitTestView) {
+        hitTestView = self.scrollView;
+    }
+    return hitTestView;
+}
+</code></pre>
+
+<p>至此,文章翻译结束.<a href="http://smnh.me/hit-testing-in-ios/">原文查看</a></p>
+
+<h4>译者的话</h4>
+
+<p>在查阅资料时,不要只是看看,最好动手尝试一下.否则,你看过的东西即便是错的,也会形成你的认知.</p>
+
+<p>不信你可以看看网上关于下面这类方法的博客,看看他们是如何解释<code>super</code>一下的作用.</p>
+
+<pre><code>- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event {
+    [super touchesBegan:touches withEvent:event];
+}
+</code></pre>
+
+<p>很多解释都会扯到父视图,至少从表面实验结果这是对的,注释掉<code>[super touchesBegan:touches withEvent:event];</code>,父视图的该方法确实不会执行,加上就会执行.这里的<code>super</code>和父视图完全没关系,而是为了调用父类的方法.</p>
+
+<p>为啥注释点不调用父视图的该方法呢?很简单,如果hit-test view能处理touch事件就不会继续沿着响应者链继续传下去了.我们在hit-test view中实现了<code>- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches</code>,就意味着hit-test view可以处理touch事件,所以事件不会继续传了.如果调用了<code>[super touchesBegan:touches withEvent:event];</code>呢?如果该hit-test view的父类没有实现该方法,就会传给响应者链中的下一个响应者,这样父视图中的该方法就会被调用.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚]]></title>
@@ -340,132 +510,6 @@ Runloop是用GCD的dispatch_source_t 实现的 Timer,GCD定时器不依赖RunLoo
 </tr>
 </tbody>
 </table>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[iOS | 命名规范]]></title>
-    <link href="http://mrshang110.github.io/blog/2015/10/11/ios-%7C-ming-ming-gui-fan/"/>
-    <updated>2015-10-11T16:31:12+08:00</updated>
-    <id>http://mrshang110.github.io/blog/2015/10/11/ios-|-ming-ming-gui-fan</id>
-    <content type="html"><![CDATA[<blockquote><p>在编程中,命名能力也是编程功底的体现.虽然很多语言命名规范相似,但也有其本身的特性.</p></blockquote>
-
-<h5>非UI相关命名规范</h5>
-
-<p>1.私有方法
-在OC语言中,声明一个方法为私有的,需要把方法写在实现文件里.如何凸显该方法私有的呢?根据笔者的经验,建议大家给方法命名以<code>p_</code>,也可以项目前缀开头.如</p>
-
-<!--more-->
-
-
-<pre><code>//  以p_开头,较为常用,便于开源
-- (void)p_dealWithDataSource:(NSData *)sourceData {
-}
-
-//  以项目前缀mf(missfresh)开头,也比较常用
-- (void)mf_dealWithDataSource:(NSData *)sourceData {
-}
-</code></pre>
-
-<p>关于前缀还有必要补充说明一下.苹果声明自己始终保有两字前缀,但很多开源库是以两字前缀命名(笔者个人也觉得两字前缀比较优雅).如苹果在iOS8引入了WK开头API,如果此时项目中也是以WK开头,方法就有可能和系统API重名,由此导致的引起重写系统私有API的bug.</p>
-
-<p>2.分类中方法
-    在分类中,给方法命名时,需要给方法加上前缀,以避免重写系统方法.分类中若存在和原始类中相同的方法,由于分类中的优先级比较高,会覆盖原始类中的实现.如</p>
-
-<pre><code>//
-//  UIImage+GIF.h
-//  LBGIFImage
-//
-//  Created by Laurin Brandner on 06.01.12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
-//
-
-#import &lt;UIKit/UIKit.h&gt;
-
-@interface UIImage (GIF)
-
-+ (UIImage *)sd_animatedGIFNamed:(NSString *)name;
-
-+ (UIImage *)sd_animatedGIFWithData:(NSData *)data;
-
-- (UIImage *)sd_animatedImageByScalingAndCroppingToSize:(CGSize)size;
-
-@end
-</code></pre>
-
-<p>上面是著名三方库SDWebImage中的一个分类.
-3.静态全部变量
-    在开发中,尽量减少使用宏定义,在合适的时候使用常量会是代码可读性更强.静态全局变量,在命名时,常以k(一般类型常量,const发音同konst,这是笔者在c语言编程时知道的)开头,其后紧跟类名,然后才是变量名.如</p>
-
-<pre><code>//Animation.h  
-// 动画时长  
-kAnimationDuration  
-</code></pre>
-
-<p>有人可能会奇怪为什么要加上类名?如果项目中出现两个重名的静态全局变量,通过符号表很难区分.如果加上类名,出现问题时,更容易确定.</p>
-
-<p>4.实战分析
-下面以NSString方法为例,进行分析.</p>
-
-<pre><code>+ (instancetype)stringWithFormat:(NSString *)format, ...
-+ (instancetype)stringWithCharacters:(const unichar *)chars length:(NSUInteger)length
-</code></pre>
-
-<p>上面两个方法的返回值均是NSString对象,故方法名以名词string开头.</p>
-
-<pre><code>– lowercaseStringWithLocale:
-</code></pre>
-
-<p>上面的方法返回值也是NSString对象,为了表达更精确,可以适当地给名词加上定语lowercase修饰.</p>
-
-<pre><code>- (void)getCharacters:(unichar *)buffer range:(NSRange)aRange
-</code></pre>
-
-<p>OC中方法很少以get开头,一般是需要通过参数来接收返回值时,方法名才会以get开头.上面的buffer通过指针获得返回值.</p>
-
-<pre><code>- (BOOL)hasSuffix:(NSString *)aString
-- (BOOL)isEqualToString:(NSString *)aString
-</code></pre>
-
-<p>方法返回值是BOOL类型时,常以is/has/can等开头,使得语义表达更为清楚.</p>
-
-<p>通过NSString一些方法的分析,相信读者能从中体会到OC方法命名的优雅,也希望读者细细揣摩系统方法的命名规则.</p>
-
-<h5>UI相关命名规范</h5>
-
-<p>1.控件命名
-UI控件命名时,控件以View,Button,Label等结尾,便于一眼看出控件类型,除非是已被认可的缩写,一般不要用.</p>
-
-<pre><code>// UIButton中,
-@property(nullable, nonatomic,readonly,strong) UILabel     *titleLabel;
-@property(nullable, nonatomic,readonly,strong) UIImageView *imageView;
-</code></pre>
-
-<p>2.控件代理命名
-控件的代理为了通用性,一般都需要将本身传出.如果要表达该控件能或者是否应该做什么以及将要(正在/已经)等时态的意思时,代理方法命名时应该以类名开头且是第一个参数.这样的好处不言而喻.一般使用者都会根据类名直接联想代理方法,如UICollectionView,我会输入collection进行联想.这里并不是必须这样,关键看方法名语义是否通顺.</p>
-
-<pre><code>// 方法以tableView开头且是第一个参数
-- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath;
-</code></pre>
-
-<h5>其他建议</h5>
-
-<ul>
-<li>程序中,不要出现"魔法数字",方式①和②相比,可读性很明显.</li>
-</ul>
-
-
-<pre><code>① a &lt; 1000;
-② string.length &lt; MAX_STRING_LENGTH;
-</code></pre>
-
-<ul>
-<li><p>尽量延迟变量声明创建,使用时再创建,这样在读代码时不至于要猜测该变量的作用.</p></li>
-<li><p>方法实现不要过长,保持在10行以内,也可视情况而定.如果实现过长,可以重构为多个方法.</p></li>
-<li><p>根据场景重新命名方法.已有的方法实现可以实现相同的功能,但是根据场景不同,仍要重写一个方法,在内部调用已有方法.</p></li>
-<li><p>if语句不要嵌套过深,一般不要超过3层.代码刚写的时候一般不会有这个问题,多是在后期维护时根据需求不断嵌套.笔者建议修改者尽可能读懂原先逻辑,书写if语句可以并列多个,而不是层层嵌套.</p></li>
-</ul>
 
 ]]></content>
   </entry>

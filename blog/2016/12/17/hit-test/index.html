@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Mrshang110</title>
+  <title>Hit-Testing in iOS - Mrshang110</title>
   <meta name="author" content="尚高林">
 
   
-  <meta name="description" content="iOS开发">
-  <meta name="keywords" content="技术, 码农, iOS, 进阶, 学习">
+  <meta name="description" content="这是一篇阐述Hit-Testing很好的文章,翻译过来和大家分享.译者在查找相关资料时,发现网上很多博客关于iOS touch事件处理有明显的理解错误问题,内容只根据几个简单log就开始解释事件处理流程. 一个点(如touch-point)是否和一个绘制在屏幕上的图像对象(如UIView)相交( &hellip;">
+  
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://mrshang110.github.io/">
+  <link rel="canonical" href="http://mrshang110.github.io/blog/2016/12/17/hit-test/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Mrshang110" type="application/atom+xml">
@@ -74,15 +74,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/12/17/hit-test/">Hit-Testing in iOS</a></h1>
+      <h1 class="entry-title">Hit-Testing in iOS</h1>
     
     
       <p class="meta">
@@ -95,14 +92,14 @@
         
         
         
-          | <a href="/blog/2016/12/17/hit-test/#comments">评论</a>
+          | <a href="#comments">评论</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><blockquote><p>这是一篇阐述Hit-Testing很好的文章,翻译过来和大家分享.译者在查找相关资料时,发现网上很多博客关于iOS touch事件处理有明显的理解错误问题,内容只根据几个简单log就开始解释事件处理流程.</p></blockquote>
+<div class="entry-content"><blockquote><p>这是一篇阐述Hit-Testing很好的文章,翻译过来和大家分享.译者在查找相关资料时,发现网上很多博客关于iOS touch事件处理有明显的理解错误问题,内容只根据几个简单log就开始解释事件处理流程.</p></blockquote>
 
 <p>一个点(如touch-point)是否和一个绘制在屏幕上的图像对象(如UIView)相交(intersects),决定这一结果的过程就是hit-testing.找出用户手指下能接收触摸事件的那个最前端的UIView,在iOS中就是用hit-testing实现的. 它的算法实现反先序的深度优先遍历算法(reverse pre-order depth-first traversal algorithm).</p>
 
@@ -316,195 +313,69 @@
 
 <p>为啥注释点不调用父视图的该方法呢?很简单,如果hit-test view能处理touch事件就不会继续沿着响应者链继续传下去了.我们在hit-test view中实现了<code>- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches</code>,就意味着hit-test view可以处理touch事件,所以事件不会继续传了.如果调用了<code>[super touchesBegan:touches withEvent:event];</code>呢?如果该hit-test view的父类没有实现该方法,就会传给响应者链中的下一个响应者,这样父视图中的该方法就会被调用.</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/11/21/ios-%7C-bool/">iOS | Bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-11-21T20:39:12+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2016</span></span> <span class='time'>8:39 pm</span></time>
-        
-        
-        
-          | <a href="/blog/2016/11/21/ios-%7C-bool/#comments">评论</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>每次在Xcode中输入boo时,就会提示BOOL,bool,Boolean,boolean_t.我个人比较喜欢刨根问底,于是就有了这篇随笔.这里的实验环境是Xcode8.0,我感觉这些关于BOOL的定义发生过变化,所以特此说明实验环境.</p>
-
-<p>  <img src="http://upload-images.jianshu.io/upload_images/1523795-cca8c9ed5d930d18.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="傻傻分不清楚" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/11/21/ios-%7C-bool/">阅读全文→</a>
-    </footer>
   
 
+<span class="byline author vcard">Posted by <span class="fn">尚高林</span></span>
 
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">iOS | XCode8新增可视化循环引用调试工具</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
 
-<time class='entry-date' datetime='2016-10-28T17:47:19+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>28</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:47 pm</span></time>
-        
-        
-        
-          | <a href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/#comments">评论</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>英文地址:<a href="http://inessential.com/2016/09/22/memory_graph_debugger_tips">Memory Graph Debugger Tips</a></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>译者的话:
-</span><span class='line'>目前关于Debug Memory Graph的中文资料很少,
-</span><span class='line'>甚至没有一篇有内容的.笔者在查阅资料时发现此文,翻译过
-</span><span class='line'>来和大家一起分享.翻译过程中,补充了一些截图(原文没有图片).
-</span><span class='line'>交流中很少翻译成中文或者没有统一中文翻译的词,依然使用英文原词.</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Memory Graph Debugger 使用方法</h3>
-
-<p>我没有太多要分享的,因为我使用Xcode里新增的内存图调试工具仅约一天,但我确实有一些建议要分享给您.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/10/28/ios-%7C-xcode8xin-zeng-ke-shi-hua-xun-huan-yin-yong-diao-shi-gong-ju/">阅读全文→</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+<time class='entry-date' datetime='2016-12-17T13:24:13+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>1:24 pm</span></time>
       
-  <header>
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ioskai-fa/'>ios开发</a>
+  
+</span>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">iOS | 开发中你可能没有留意的那些事</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-10-11T17:33:45+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>5:33 pm</span></time>
-        
-        
-        
-          | <a href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/#comments">评论</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在正式开始这篇随笔前,先插播一个广告,当然你也可以直接进入正文.So happy,iOS10中为NSTimer增加了一个block方法,这个方法可以避免之前因保留target引起的循环引用问题.苹果新增方法为啥我会so happy呢?如果感兴趣,读过我之前的随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>你就明白了.</p>
-
+      <div class="sharing">
+  
+  
+  
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/10/11/ios-%7C-zai-zheng-shi-kai-shi-zhe-pian-sui-bi-qian/">阅读全文→</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">iOS | 不同场景下的定时方法</a></h1>
-    
-    
-      <p class="meta">
-        
+        <a class="basic-alignment left" href="/blog/2016/11/21/ios-%7C-bool/" title="Previous Post: iOS | bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚">&laquo; iOS | bool, BOOL ,Boolean ,boolean_t 傻傻分不清楚</a>
+      
+      
+       <section>
+        <!-- 多说评论框 start -->
+<div class="ds-thread" data-thread-key="/blog/2016/12/17/hit-test" data-title="Hit-Testing in iOS" data-url="http://mrshang110.github.io/blog/2016/12/17/hit-test/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    var duoshuoQuery = {short_name:"mrshang110"};
+    (function() {
 
-
-
-
-<time class='entry-date' datetime='2015-11-12T19:50:49+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>12</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:50 pm</span></time>
-        
-        
-        
-          | <a href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/#comments">评论</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在之前的开发随笔<a href="http://www.jianshu.com/p/2fe076e5e255">小心NSTimer中的循环引用</a>中介绍了NSTimer会因持有目标对象而引起内存泄漏(循环引用)以及解决办法.这篇随笔主要介绍iOS开发中其他几种实现定时任务的方式及其优缺点.</p>
-
-<p><strong><em>再谈NSTimer</em></strong>
-要知道NSTimer工作方式,需要了解一下Runloop(这里只是给出描述,后续随笔会介绍).Runloop简单地说就是一个接收处理异步消息事件的循环,该循环中等待事件发生，然后将这个事件送到能处理它的地方。</p>
-
-<p>或许你还不是很明白,没有关系,有个初步概念就不影响你理解NSTimer了.</p>
-
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+     })();
+ </script>
+ <!-- 多说公共JS代码 end -->
+      </section>
+ 
+   </p>
+  </footer>
+  </article>
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/11/12/ios-%7C-bu-tong-chang-jing-xia-de-ding-shi-fang-fa/">阅读全文→</a>
-    </footer>
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/posts/2">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -571,7 +442,10 @@
       var disqus_shortname = 'mrshang110';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://mrshang110.github.io/blog/2016/12/17/hit-test/';
+        var disqus_url = 'http://mrshang110.github.io/blog/2016/12/17/hit-test/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
